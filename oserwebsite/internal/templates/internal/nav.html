@@ -1,8 +1,9 @@
 {% load static %}
 
 <nav class="navbar sticky-top navbar-expand-md navbar-light bg-light">
+
   <!-- brand logo -->
-  <a class="navbar-brand" href="#"><img src="{% static 'img/oser_sm.png' %}" alt="Logo OSER"/></a>
+  <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'img/oser_sm.png' %}" alt="Logo OSER"/></a>
 
   <!-- navbar toggle button (for smaller screens) -->
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,6 +14,7 @@
 
     <!-- navbar contents (left part) -->
     <ul class="navbar-nav mr-auto">
+      {% if user.is_authenticated %}
       <li class="nav-item active">
         <a href="#" class="nav-link">Tableau de bord</a>
       </li>
@@ -21,14 +23,17 @@
           Mon tutorat
         </a>
         <div class="dropdown-menu">
-          <a class="dropdown-item" href="#">Mon lycée</a>
+          <a class="dropdown-item" href="{{ high_school.get_absolute_url }}">Mon lycée</a>
           <a class="dropdown-item" href="#">Mon groupe de tutorat</a>
         </div>
       </li>
+      {% endif %}
     </ul>
 
     <!-- navbar contents (right part)-->
     <ul class="navbar-nav justify-content-end">
+
+      {% if user.is_authenticated %}
       <!-- Q&A -->
       <li class="nav-item"><a href="#" class="nav-link">FAQ</a></li>
 
@@ -38,12 +43,20 @@
           Profil
         </a>
         <div class="dropdown-menu dropdown-menu-right">
-          <a class="dropdown-item" href="#">Voir mon profil</a>
-          <a class="dropdown-item" href="#">Modifier mon profil</a>
+          <a class="dropdown-item" href="{% url profile.get_absolute_url %}">
+            Voir mon profil</a>
+          <a class="dropdown-item" href="#">
+            Modifier mon profil</a>
           <div role="separator" class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Se déconnecter</a>
+          <a class="dropdown-item" href="{% url 'logout' %}">
+            Se déconnecter</a>
         </div>
       </li>
+      {% else %}
+      <li class="nav-item"><a href="{% url 'login' %}" class="nav-link">
+        Connexion
+      </a></li>
+      {% endif %}
 
     </ul>
   </div>

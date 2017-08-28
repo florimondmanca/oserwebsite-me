@@ -17,13 +17,21 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
-from django.views.generic import RedirectView
+from django.contrib.auth.views import login
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^internal/', include('internal.urls')),
-    url(r'^$', RedirectView.as_view(url='internal/', permanent=True))
 ]
 
 # allow serving static files (DEVELOPMENT ONLY)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# User authentication views (login, logout, password management, etc.)
+urlpatterns += [
+    url(r'^accounts/', include('django.contrib.auth.urls')),
+]
+
+urlpatterns += [
+    url(r'^$', login),
+]

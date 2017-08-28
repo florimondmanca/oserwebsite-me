@@ -1,0 +1,60 @@
+{% extends "internal/base.html" %}
+{% load static %}
+
+{% block styles %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="wrapper">
+  <!-- LOGIN FORM -->
+  <div class="login-form card bg-light">
+    <div class="card-body">
+      <h4 class="card-title">Connexion</h4>
+
+      {% include "form_errors.html" with form=form %}
+
+      {% if next %}
+      <p class="alert alert-danger">
+        Veuillez vous authentifier pour accéder à cette page.
+      </p>
+      {% endif %}
+
+      <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+
+        <div class="form-group">
+          {{ form.username.label_tag }}
+          <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-user"></i></div>
+            {{ form.username }}
+          </div>
+        </div>
+        <div class="form-group">
+          {{ form.password.label_tag }}
+          <div class="input-group">
+            <div class="input-group-addon"><span class="fa fa-lock"></span></div>
+            {{ form.password }}
+          </div>
+        </div>
+        <div class="form-group text-center">
+          <button type="submit" class="btn btn-primary" value="login">Se connecter</button>
+          <input type="hidden" name="next" value="{{ next }}" />
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+
+  <!-- Script that adds BS classes on Django form fields -->
+  <script type="text/javascript">
+    $("input[id='id_username']").addClass("form-control");
+    $("input[id='id_password']").addClass("form-control");
+  </script>
+{% endblock %}

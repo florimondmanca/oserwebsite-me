@@ -116,6 +116,10 @@ class Tutor(Person):
                                        models.SET_NULL, null=True,
                                        verbose_name='groupe de tutorat')
 
+    @property
+    def high_school(self):
+        return self.tutoring_group.high_school
+
     def get_absolute_url(self):
         return reverse('tutor-detail', args=[str(self.id)])
 
@@ -183,6 +187,9 @@ class HighSchool(AddressMixin, models.Model):
     def number_tutorees(self):
         """Count how many tutorees are in the school."""
         return self.tutoree_set.count()
+
+    def get_absolute_url(self):
+        return reverse('highschool-detail', args=[str(self.id)])
 
     def __str__(self):
         return self.name

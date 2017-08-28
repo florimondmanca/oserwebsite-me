@@ -3,10 +3,13 @@
 import random
 
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
-from .models import Tutoree, Tutor
+from .models import Tutoree, Tutor, HighSchool
 
 
+@login_required
 def index(request):
     """Home page/dashboard."""
     tutoree = random.choice(Tutoree.objects.all())
@@ -19,13 +22,19 @@ def index(request):
     })
 
 
-class TutoreeDetailView(generic.DetailView):
+class TutoreeDetailView(LoginRequiredMixin, generic.DetailView):
     """Detail view for Tutoree."""
 
     model = Tutoree
 
 
-class TutorDetailView(generic.DetailView):
+class TutorDetailView(LoginRequiredMixin, generic.DetailView):
     """Detail view for Tutor."""
 
     model = Tutor
+
+
+class HighSchoolDetailView(LoginRequiredMixin, generic.DetailView):
+    """Detail view for HighSchool."""
+
+    model = HighSchool

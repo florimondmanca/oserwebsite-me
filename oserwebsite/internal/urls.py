@@ -20,3 +20,9 @@ urlpatterns += [
     url(r'^tuteur/(?P<pk>\d+)/$', views.TutorDetailView.as_view(),
         name='tutor-detail'),
 ]
+
+# HighSchool detail view
+urlpatterns += [
+    url(r'^lycee/(?P<pk>\d+)/$', views.HighSchoolDetailView.as_view(),
+        name='highschool-detail'),
+]

@@ -1,0 +1,78 @@
+:root {
+    --oser-turq: rgb(0, 180, 183);
+    --oser-blue: rgb(52, 41, 126);
+}
+
+/*
+LAYOUT
+*/
+
+/* Mobile layout (mobile-first) */
+.wrapper {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        "main"
+        "requirements"
+        "board";
+}
+
+.board {
+    display:grid;
+    grid-gap: 10px;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        "board-1"
+        "board-2";
+    grid-area: board;
+}
+
+/* Larger screens layout */
+@media only screen and (min-width: 768px) {
+    .wrapper {
+        grid-template-columns: 1fr 3fr 1fr;
+        grid-template-areas:
+            ". main"
+            ". requirements"
+            ". board"
+    }
+    .board {
+        display:grid;
+        grid-gap: 10px;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "board-1 board-2";
+    }
+}
+
+.main {
+    grid-area: main;
+}
+
+.requirements {
+    grid-area: requirements;
+}
+
+.board-1 {
+    grid-area: board-1;
+}
+
+.board-2 {
+    grid-area: board-2;
+}
+
+
+/*
+STYLING
+*/
+
+#logo {
+    margin: 1em;
+}
+
+
+#welcome {
+    color: var(--oser-blue);
+    font-weight: bold;
+}

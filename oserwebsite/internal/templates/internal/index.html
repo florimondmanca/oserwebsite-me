@@ -1,0 +1,75 @@
+{% extends "internal/base.html" %}
+{% load static %}
+{% load i18n %}
+
+
+{% block styles %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock %}
+
+{% block content %}
+  <div class="wrapper">
+    <div class="main text-center" >
+      <img id="logo" class="d-none d-sm-inline" src="{% static 'img/oser_lg.png' %}" alt="Logo OSER">
+      <img id="logo" class="d-inline d-sm-none" src="{% static 'img/oser_md.png' %}" alt="Logo OSER">
+      <h5 id="welcome">Bienvenue sur le site interne, {{ tutoree.full_name }} !</h5>
+      <p class="text-muted">Ici, tu peux gérer ton dossier élève et suivre les évènements à venir (séances, sorties, projets...).
+      <br /> <em>Besoin d'aide ? Jette un œil à la <a href="#">FAQ</a>.</em></p>
+    </div>
+
+    <!-- Requirements block asking the tutoree to send missing documents -->
+    <div class="requirements">
+      {% if missing_documents %}
+      <div class="alert alert-warning">
+        <h5 style="text-align: center;">Documents d'inscription manquants</h5>
+        <p>Pour compléter ton inscription, il nous manque les documents suivants :</p>
+        <ul>
+          <li>La charte élève</li>
+          <li>Ton autorisation parentale</li>
+          <li>L'autorisation de droit à l'image</li>
+        </ul>
+        <div class="text-center">
+          <a href="#" class="btn btn-warning">Envoyer mes documents</a>
+        </div>
+
+        <br>
+        <p class="alert alert-secondary">Tu as rendu tes documents en séance mais ce rappel s'affiche encore ? Nous t'invitons à nous le <a href="#">signaler par email</a>.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Dashboard -->
+    <div class="board">
+      <!-- Incoming tutoring classes -->
+      <div class="board-1">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Mes prochaines séances de tutorat</h4>
+            <a href="#" class="card-text">{{ tutoree.tutoring_group }}</a>
+          </div>
+          <ul class="list-group list-group-flush">
+            {% for meeting in meetings %}
+              <li class="list-group-item">{% blocktrans with meeting.date as date %}
+                {{ date }}
+              {% endblocktrans %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+      <div class="board-2">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Prochaines sorties</h4>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">Palais de la Découverte</li>
+            <li class="list-group-item">Château des Ducs de Bretagne</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+{% endblock %}

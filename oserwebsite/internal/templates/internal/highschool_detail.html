@@ -1,5 +1,11 @@
 {% extends "internal/base.html" %}
 
 {% block content %}
-<h1>Détail du lycée {{ high_school }}</h1>
+<h1>{{ high_school }}</h1>
+
+<ul>
+  <li>{{ high_school.address }}</li>
+  <li>{{ high_school.number_tutorees }} tutorés</li>
+  <li>{{ high_school.number_tutors }} tuteurs</li>
+</ul>
 {% endblock %}

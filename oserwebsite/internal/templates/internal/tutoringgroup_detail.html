@@ -1,5 +1,25 @@
 {% extends "internal/base.html" %}
 
 {% block content %}
-<h1>Détail de groupe de tutorat</h1>
+<h1>{{ tutoring_group }}</h1>
+<ul>
+  <li>Au lycée {{ tutoring_group.high_school }}</li>
+  <li>{{ tutoring_group.number_tutorees }} tutorés</li>
+  <li>{{ tutoring_group.number_tutors }} tuteurs</li>
+  <li>{{ tutoring_group.number_meetings }} séances au calendrier</li>
+  <li>Séances à venir : {{ tutoring_group.upcoming_meetings.count }}
+    <ul>
+      {% for meeting in tutoring_group.upcoming_meetings %}
+        <li>{{ meeting }}</li>
+      {% endfor %}
+    </ul>
+  </li>
+  <li>Séances passées : {{ tutoring_group.past_meetings.count }}
+    <ul>
+      {% for meeting in tutoring_group.past_meetings %}
+        <li>{{ meeting }}</li>
+      {% endfor %}
+    </ul>
+  </li>
+</ul>
 {% endblock %}

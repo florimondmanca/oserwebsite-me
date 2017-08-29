@@ -49,10 +49,10 @@
             <a href="{{ profile.high_school.get_absolute_url }}" class="card-text">{{ profile.tutoring_group }}</a>
           </div>
           <ul class="list-group list-group-flush">
-            {% for meeting in meetings %}
-              <li class="list-group-item">{% blocktrans with meeting.date as date %}
-                {{ date }}
-              {% endblocktrans %}</li>
+            {% for meeting in profile.tutoring_group.upcoming_meetings %}
+            <li class="list-group-item">
+              {% blocktrans with meeting.date as date %}{{ date }}{% endblocktrans %}
+            </li>  
             {% endfor %}
           </ul>
         </div>

@@ -3,6 +3,8 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.utils.safestring import mark_safe
+import datetime
 
 
 class AddressMixin(models.Model):
@@ -29,17 +31,20 @@ class AddressMixin(models.Model):
                                 models.SET_NULL, null=True,
                                 verbose_name='pays')
 
-    @property
-    def address(self):
-        return '{}, {}, {} {}, {}'.format(
-            self.line1, self.line2, self.post_code, self.city.upper(),
-            self.country.name.upper())
+    def _address_separated(self, sep=', '):
+        city_line = '{} {}'.format(self.post_code, self.city.upper())
+        _lines = (self.line1, self.line2, city_line,
+                  self.country.name.upper())
+        lines = list(filter(None, _lines))
+        return mark_safe(sep.join(lines))
 
     @property
     def address_inline(self):
-        return '{}\n{}\n{} {}\n{}'.format(
-            self.line1, self.line2, self.post_code, self.city.upper(),
-            self.country.name.upper())
+        return self._address_separated(sep=', ')
+
+    @property
+    def address(self):
+        return self._address_separated(sep='<br/>')
 
 
 class Profile(AddressMixin, models.Model):
@@ -162,6 +167,49 @@ class TutoringGroup(models.Model):
         return self.tutoree_set.count()
     number_tutorees.fget.short_description = 'Nombre de tutorés'
 
+    @property
+    def number_meetings(self):
+        """Number of meetings for this group."""
+        return self.tutoringmeeting_set.count()
+    number_meetings.fget.short_description = 'Nombre de séances'
+
+    def upcoming_meetings_first(self, first=5):
+        """Get a list of the next upcoming meetings i.e. those after today).
+
+        Parameters
+        ----------
+        first : int, optional
+            The number of upcoming meetings to get (default is 5).
+            Pass None to get all upcoming meetings.
+        """
+        today = datetime.date.today()
+        upcoming_meetings = (self.tutoringmeeting_set
+                             .order_by('date')
+                             .filter(date__gte=today))
+        return upcoming_meetings[:first]
+
+    def upcoming_meetings(self):
+        """Get all upcoming meetings."""
+        return self.upcoming_meetings_first(None)
+
+    def past_meetings_first(self, first=5):
+        """Get a list of the the past meetings (i.e. those before today).
+
+        Parameters
+        first : int, optional
+            The number of past meetings to get (default is 5).
+            Pass None to get all past meetings.
+        """
+        today = datetime.date.today()
+        past_meetings = (self.tutoringmeeting_set
+                         .order_by('-date')
+                         .filter(date__lt=today))
+        return past_meetings[:first]
+
+    def past_meetings(self):
+        """Get all past meetings."""
+        return self.past_meetings_first(None)
+
     def get_absolute_url(self):
         return reverse('tutoringgroup-detail', args=[str(self.id)])
 
@@ -205,6 +253,12 @@ class HighSchool(AddressMixin, models.Model):
     def number_tutorees(self):
         """Count how many tutorees are in the school."""
         return self.tutoree_set.count()
+
+    @property
+    def number_tutors(self):
+        """Count how many tutors operte in the school."""
+        tutors = Tutor.objects.filter(tutoring_group__high_school=self)
+        return tutors.count()
 
     def get_absolute_url(self):
         return reverse('highschool-detail', args=[str(self.id)])

@@ -1,31 +1,19 @@
 """Internal website views."""
 
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.base import ContextMixin
 from django.views import generic, View
-from .models import Tutoree, Tutor, HighSchool, TutoringMeeting, TutoringGroup
-from .utils import get_profile_or_none
+from .models import Tutoree, Tutor, HighSchool, TutoringGroup
 
 
-class IndexView(LoginRequiredMixin, ContextMixin, View):
-    """Home page dashboard."""
+class IndexView(LoginRequiredMixin, generic.TemplateView):
+    """Home index view."""
 
-    def get(self, request):
-        profile = get_profile_or_none(request.user)
-        if not profile:
-            raise ValueError('Profile does not exist for user {}'
-                             .format(request.user))
-        upcoming_meetings = TutoringMeeting.objects.filter(
-            tutoring_group=profile.tutoring_group)[:5]
-
-        return render(request, 'internal/index.html', {
-            'meetings': upcoming_meetings
-        })
+    template_name = 'internal/index.html'
 
 
 class BrandView(View):
-    """View visited on clicking the brand."""
+    """View visited when clicking the brand."""
 
     def get(self, request):
         if request.user and request.user.is_authenticated():
@@ -38,21 +26,25 @@ class TutoreeDetailView(LoginRequiredMixin, generic.DetailView):
     """Detail view for Tutoree."""
 
     model = Tutoree
+    context_object_name = 'tutoree'
 
 
 class TutorDetailView(LoginRequiredMixin, generic.DetailView):
     """Detail view for Tutor."""
 
     model = Tutor
+    context_object_name = 'tutor'
 
 
 class HighSchoolDetailView(LoginRequiredMixin, generic.DetailView):
     """Detail view for HighSchool."""
 
     model = HighSchool
+    context_object_name = 'high_school'
 
 
 class TutoringGroupDetailView(LoginRequiredMixin, generic.DetailView):
     """Detail view for TutoringGroup."""
 
     model = TutoringGroup
+    context_object_name = 'tutoring_group'

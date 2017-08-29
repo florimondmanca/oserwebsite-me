@@ -3,10 +3,10 @@
 {% block content %}
 <h1>{{ tutoring_group }}</h1>
 <ul>
-  <li>Au lycée {{ tutoring_group.high_school }}</li>
-  <li>{{ tutoring_group.number_tutorees }} tutorés</li>
-  <li>{{ tutoring_group.number_tutors }} tuteurs</li>
-  <li>{{ tutoring_group.number_meetings }} séances au calendrier</li>
+  <li>Lycée : {{ tutoring_group.high_school }}</li>
+  <li>Nombre de tutorés : {{ tutoring_group.number_tutorees }}</li>
+  <li>Nombre de tuteurs : {{ tutoring_group.number_tutors }}</li>
+  <li>Nombre de séances cette année : {{ tutoring_group.number_meetings }}</li>
   <li>Séances à venir : {{ tutoring_group.upcoming_meetings.count }}
     <ul>
       {% for meeting in tutoring_group.upcoming_meetings %}

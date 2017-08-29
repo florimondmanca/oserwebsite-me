@@ -1,5 +1,9 @@
 {% extends "internal/base.html" %}
 
 {% block content %}
-<h1>Détail de tuteur</h1>
+<h1>{{ tutor }}</h1>
+<ul>
+  <li>Groupe de tutorat : <a href="{{ tutor.tutoring_group.get_absolute_url }}">{{ tutor.tutoring_group }}</a></li>
+  <li>Lycée de rattachement : <a href="{{ tutor.high_school.get_absolute_url}}">{{ tutor.high_school }}</a></li>
+</ul>
 {% endblock %}

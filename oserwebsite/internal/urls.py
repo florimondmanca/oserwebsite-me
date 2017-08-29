@@ -1,7 +1,6 @@
 """Internal website urls."""
 
 from django.conf.urls import url
-from django.views.generic import TemplateView
 
 from . import views
 
@@ -9,30 +8,32 @@ from . import views
 urlpatterns = [
     url(r'^$', views.BrandView.as_view(), name='brand'),
     url(r'^index/$', views.IndexView.as_view(), name='index'),
-    url(r'^faq/$', TemplateView.as_view(template_name='internal/faq.html'),
-        name='faq'),
+    url(r'^faq/$', views.FaqView.as_view(), name='faq'),
 ]
 
-# Tutoree detail view
+# Tutoree views
 urlpatterns += [
     url(r'^tutore/(?P<pk>\d+)/$', views.TutoreeDetailView.as_view(),
         name='tutoree-detail'),
+    url(r'^tutores/$', views.TutoreeListView.as_view(), name='tutoree-list'),
 ]
 
-# Tutor detail view
+# Tutor views
 urlpatterns += [
     url(r'^tuteur/(?P<pk>\d+)/$', views.TutorDetailView.as_view(),
         name='tutor-detail'),
 ]
 
-# HighSchool detail view
+# HighSchool views
 urlpatterns += [
     url(r'^lycee/(?P<pk>\d+)/$', views.HighSchoolDetailView.as_view(),
         name='highschool-detail'),
+    url(r'^lycee/(?P<pk>\d+)/tutores/$',
+        views.HighSchoolTutoreeListView.as_view(),
+        name='highschool-tutoree-list'),
 ]
 
-# Tutoring group detail view
-# HighSchool detail view
+# Tutoring group views
 urlpatterns += [
     url(r'^groupe/(?P<pk>\d+)/$', views.TutoringGroupDetailView.as_view(),
         name='tutoringgroup-detail'),

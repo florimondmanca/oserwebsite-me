@@ -4,8 +4,8 @@
 <h1>{{ high_school }}</h1>
 
 <ul>
-  <li>{{ high_school.address }}</li>
-  <li>{{ high_school.number_tutorees }} tutorés</li>
-  <li>{{ high_school.number_tutors }} tuteurs</li>
+  <li>Adresse : {{ high_school.address_inline }}</li>
+  <li>Nombre de tutorés dans ce lycée : {{ high_school.number_tutorees }} (<a href="{% url 'highschool-tutoree-list' high_school.id %}">liste</a>)</li>
+  <li>Nombre de tuteurs pour ce lycée : {{ high_school.number_tutors }}</li>
 </ul>
 {% endblock %}

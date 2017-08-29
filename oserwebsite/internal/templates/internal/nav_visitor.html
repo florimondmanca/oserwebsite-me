@@ -1,0 +1,10 @@
+<!-- Navigation as visitor -->
+
+{% extends "internal/nav_base.html" %}
+{% load static %}
+
+{% block nav_right %}
+  <li class="nav-item">
+    <a href="{% url 'login' %}" class="nav-link">Connexion</a>
+  </li>
+{% endblock %}

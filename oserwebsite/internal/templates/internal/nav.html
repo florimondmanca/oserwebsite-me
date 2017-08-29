@@ -1,63 +1,41 @@
+<!-- Navigation when logged in as user -->
+
+{% extends "internal/nav_base.html" %}
 {% load static %}
 
-<nav class="navbar sticky-top navbar-expand-md navbar-light bg-light">
+{% block nav_left %}
+  <li class="nav-item active">
+    <a href="{% url 'index' %}" class="nav-link">Tableau de bord</a>
+  </li>
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Mon tutorat
+    </a>
+    <div class="dropdown-menu">
+      {{ profile }}
+      <a class="dropdown-item" href="{{ profile.high_school.get_absolute_url }}">Mon lycée</a>
+      <a class="dropdown-item" href="{{ profile.tutoring_group.get_absolute_url }}">Mon groupe de tutorat</a>
+    </div>
+  </li>
+{% endblock %}
 
-  <!-- brand logo -->
-  <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'img/oser_sm.png' %}" alt="Logo OSER"/></a>
+{% block nav_right %}
+  <!-- Q&A -->
+  <li class="nav-item"><a href="{% url 'faq' %}" class="nav-link">FAQ</a></li>
 
-  <!-- navbar toggle button (for smaller screens) -->
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-    <!-- navbar contents (left part) -->
-    <ul class="navbar-nav mr-auto">
-      {% if user.is_authenticated %}
-      <li class="nav-item active">
-        <a href="#" class="nav-link">Tableau de bord</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Mon tutorat
-        </a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="{{ high_school.get_absolute_url }}">Mon lycée</a>
-          <a class="dropdown-item" href="#">Mon groupe de tutorat</a>
-        </div>
-      </li>
-      {% endif %}
-    </ul>
-
-    <!-- navbar contents (right part)-->
-    <ul class="navbar-nav justify-content-end">
-
-      {% if user.is_authenticated %}
-      <!-- Q&A -->
-      <li class="nav-item"><a href="#" class="nav-link">FAQ</a></li>
-
-      <!-- splitted dropdown for Profile -->
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Profil
-        </a>
-        <div class="dropdown-menu dropdown-menu-right">
-          <a class="dropdown-item" href="{% url profile.get_absolute_url %}">
-            Voir mon profil</a>
-          <a class="dropdown-item" href="#">
-            Modifier mon profil</a>
-          <div role="separator" class="dropdown-divider"></div>
-          <a class="dropdown-item" href="{% url 'logout' %}">
-            Se déconnecter</a>
-        </div>
-      </li>
-      {% else %}
-      <li class="nav-item"><a href="{% url 'login' %}" class="nav-link">
-        Connexion
-      </a></li>
-      {% endif %}
-
-    </ul>
-  </div>
-</nav>
+  <!-- splitted dropdown for Profile -->
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Profil
+    </a>
+    <div class="dropdown-menu dropdown-menu-right">
+      <a class="dropdown-item" href="{{ profile.get_absolute_url }}">
+        Voir mon profil</a>
+      <a class="dropdown-item" href="#">
+        Modifier mon profil</a>
+      <div role="separator" class="dropdown-divider"></div>
+      <a class="dropdown-item" href="{% url 'logout' %}">
+        Se déconnecter</a>
+    </div>
+  </li>
+{% endblock %}

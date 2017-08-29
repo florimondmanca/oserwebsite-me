@@ -6,6 +6,10 @@
   <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock %}
 
+{% block nav %}
+  {% include "internal/nav_visitor.html" %}
+{% endblock %}
+
 {% block content %}
 <div class="wrapper">
   <!-- LOGIN FORM -->
@@ -52,7 +56,7 @@
 {% block scripts %}
   {{ block.super }}
 
-  <!-- Script that adds BS classes on Django form fields -->
+  <!-- Script that adds BS classes on login form fields -->
   <script type="text/javascript">
     $("input[id='id_username']").addClass("form-control");
     $("input[id='id_password']").addClass("form-control");

@@ -13,9 +13,9 @@
     <div class="main text-center" >
       <img id="logo" class="d-none d-sm-inline" src="{% static 'img/oser_lg.png' %}" alt="Logo OSER">
       <img id="logo" class="d-inline d-sm-none" src="{% static 'img/oser_md.png' %}" alt="Logo OSER">
-      <h5 id="welcome">Bienvenue sur le site interne, {{ tutoree.full_name }} !</h5>
+      <h5 id="welcome">Bienvenue sur le site interne, {{ profile.full_name }} !</h5>
       <p class="text-muted">Ici, tu peux gérer ton dossier élève et suivre les évènements à venir (séances, sorties, projets...).
-      <br /> <em>Besoin d'aide ? Jette un œil à la <a href="#">FAQ</a>.</em></p>
+      <br /> <em>Besoin d'aide ? Jette un œil à la <a href="{% url 'faq' %}">FAQ</a>.</em></p>
     </div>
 
     <!-- Requirements block asking the tutoree to send missing documents -->
@@ -46,7 +46,7 @@
         <div class="card">
           <div class="card-body">
             <h4 class="card-title">Mes prochaines séances de tutorat</h4>
-            <a href="#" class="card-text">{{ tutoree.tutoring_group }}</a>
+            <a href="{{ profile.high_school.get_absolute_url }}" class="card-text">{{ profile.tutoring_group }}</a>
           </div>
           <ul class="list-group list-group-flush">
             {% for meeting in meetings %}

@@ -42,8 +42,23 @@ class AddressMixin(models.Model):
             self.country.name.upper())
 
 
-class Person(AddressMixin, models.Model):
-    """Abstract model representing a human person."""
+class Profile(AddressMixin, models.Model):
+    """Abstract model representing a user profile.
+
+    Attributes
+    ----------
+    user : django.contrib.auth.models.User
+    birthday : date
+    phone : str
+
+    Properties
+    ----------
+    first_name : str
+    last_name : str
+    full_name : str
+    email : str
+    username : str
+    """
 
     user = models.OneToOneField(User)
     birthday = models.DateField('date de naissance',
@@ -80,8 +95,8 @@ class Person(AddressMixin, models.Model):
         abstract = True
 
 
-class Tutoree(Person):
-    """Model representing a tutoree."""
+class Tutoree(Profile):
+    """Model representing a tutoree. Inherits from Profile."""
 
     high_school = models.ForeignKey('HighSchool',
                                     models.SET_NULL, null=True,
@@ -109,7 +124,7 @@ class Tutoree(Person):
         verbose_name = 'tutoré'
 
 
-class Tutor(Person):
+class Tutor(Profile):
     """Model representing a tutor."""
 
     tutoring_group = models.ForeignKey('TutoringGroup',
@@ -146,6 +161,9 @@ class TutoringGroup(models.Model):
         """Number of tutorees in this group."""
         return self.tutoree_set.count()
     number_tutorees.fget.short_description = 'Nombre de tutorés'
+
+    def get_absolute_url(self):
+        return reverse('tutoringgroup-detail', args=[str(self.id)])
 
     def __str__(self):
         return self.name

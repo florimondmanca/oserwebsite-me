@@ -1,24 +1,11 @@
-"""Internal website context processors."""
+"""Internal site context processors."""
 
-from .models import Tutoree, Tutor
+from django.utils.functional import SimpleLazyObject
+from .utils import get_profile_or_none
 
 
-def high_school(request):
-    """Make the user's high school available to a template."""
-    # TODO : improve the flexibility of this...
-    # (what if the user is neither a tutor or a tutoree?)
-    if request.user.is_authenticated():
-        user = request.user
-        try:
-            tutoree = Tutoree.objects.get(user=user)
-        except Tutoree.DoesNotExist:
-            pass
-        else:
-            return {'high_school': tutoree.high_school}
-        try:
-            tutor = Tutor.objects.get(user=user)
-        except Tutor.DoesNotExist:
-            pass
-        else:
-            return {'high_school': tutor.high_school}
-    return {'high_school': None}
+def profile(request):
+    """Make the user profile available to template, if exists."""
+    def get_profile():  # only evaluated when {{ profile }} is in template
+        return get_profile_or_none(request.user)
+    return {'profile': SimpleLazyObject(get_profile)}

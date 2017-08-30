@@ -17,7 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
-from django.contrib.auth.views import login
+from internal.views import BrandView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -33,5 +33,5 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    url(r'^$', login),
+    url(r'^$', BrandView.as_view()),
 ]

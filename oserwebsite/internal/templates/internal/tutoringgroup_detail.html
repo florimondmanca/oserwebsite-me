@@ -1,26 +1,60 @@
 {% extends "internal/base.html" %}
 
 {% block content %}
-<h1>{{ tutoring_group }}</h1>
-<ul>
-  <li>Lycée : {{ tutoring_group.high_school }}</li>
-  <li>Niveau : {{ tutoring_group.level }}</li>
-  <li>Nombre de tutorés : {{ tutoring_group.number_tutorees }}</li>
-  <li>Nombre de tuteurs : {{ tutoring_group.number_tutors }}</li>
-  <li>Nombre de séances cette année : {{ tutoring_group.number_meetings }}</li>
-  <li>Séances à venir : {{ tutoring_group.upcoming_meetings.count }}
-    <ul>
+<div class="text-center">
+  <div class="jumbotron bg-light">
+    <h4 class="text-muted">Groupe de tutorat</h4>
+    <h1 class="display-4"><a href="{{ tutoring_group.high_school.get_absolute_url }}">{{ tutoring_group.high_school }}</a></h1>
+    <h2>{{ tutoring_group.level }}</h2>
+    <p>
+      Année ??? — {{ tutoring_group.number_tutorees }} lycéens, {{ tutoring_group.number_tutors }} tuteurs (encadrement ???) —
+      Les séances se déroulent ??? le ??? de ???h à ???h —
+      Tuteurs : rendez-vous ???
+    </p>
+  </div>
+</div>
+<div class="card-columns">
+
+  <div class="card">
+    <div class="card-header">
+      <h4 class="card-title">
+        Séances de tutorat
+      </h4>
+      <div class="dropdown">
+        <button class="btn btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Séances à venir
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="#">Séances à venir</a>
+          <a class="dropdown-item" href="#">Toutes les séances</a>
+          <a class="dropdown-item" href="#">Séances passées</a>
+        </div>
+      </div>
+    </div>
+    <ul class="list-group list-group-flush">
       {% for meeting in tutoring_group.upcoming_meetings %}
-        <li>{{ meeting }}</li>
+        <a class="list-group-item list-group-item-action" href="{{ meeting.get_absolute_url }}">{{ meeting }}</a>
       {% endfor %}
     </ul>
-  </li>
-  <li>Séances passées : {{ tutoring_group.past_meetings.count }}
-    <ul>
-      {% for meeting in tutoring_group.past_meetings %}
-        <li>{{ meeting }}</li>
+  </div>
+
+  <div class="card">
+    <h4 class="card-header">Lycéens <span class="badge badge-secondary">{{ tutoring_group.number_tutorees }}</span></h4>
+    <ul class="list-group list-group-flush">
+      {% for tutoree in tutoring_group.tutorees %}
+      <a class="list-group-item list-group-item-action" href="{{ tutoree.get_absolute_url }}">{{ tutoree }}</a>
       {% endfor %}
     </ul>
-  </li>
-</ul>
+  </div>
+
+  <div class="card">
+    <h4 class="card-header">Tuteurs <span class="badge badge-secondary">{{ tutoring_group.number_tutors }}</span></h4>
+    <ul class="list-group list-group-flush">
+      {% for tutor in tutoring_group.tutors %}
+      <a class="list-group-item list-group-item-action" href="{{ tutor.get_absolute_url }}">{{ tutor }}</a>
+      {% endfor %}
+    </ul>
+  </div>
+
+</div>
 {% endblock %}

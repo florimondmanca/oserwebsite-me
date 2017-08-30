@@ -119,7 +119,11 @@ class Tutoree(Profile):
 
     @property
     def grade(self):
-        return '{} {}'.format(self.level, self.branch.short_name)
+        if self.branch:
+            branch_short = self.branch.short_name
+        else:
+            branch_short = ''
+        return ' '.join(map(str, [self.level, branch_short]))
     grade.fget.short_description = 'classe'
 
     def get_absolute_url(self):
@@ -127,6 +131,7 @@ class Tutoree(Profile):
 
     class Meta:  # noqa
         verbose_name = 'tutoré'
+        ordering = ('user__last_name', 'user__first_name')
 
 
 class Tutor(Profile):
@@ -146,6 +151,7 @@ class Tutor(Profile):
 
     class Meta:  # noqa
         verbose_name = 'tuteur'
+        ordering = ('user__last_name', 'user__first_name')
 
 
 class TutoringGroup(models.Model):
@@ -164,15 +170,25 @@ class TutoringGroup(models.Model):
     name.fget.short_description = 'nom'
 
     @property
+    def tutors(self):
+        return self.tutor_set.all()
+    tutors.fget.short_description = 'tuteurs'
+
+    @property
+    def tutorees(self):
+        return self.tutoree_set.all()
+    tutorees.fget.short_description = 'lycéens'
+
+    @property
     def number_tutors(self):
         """Number of tutors in this group."""
-        return self.tutor_set.count()
+        return self.tutors.count()
     number_tutors.fget.short_description = 'nombre de tuteurs'
 
     @property
     def number_tutorees(self):
         """Number of tutorees in this group."""
-        return self.tutoree_set.count()
+        return self.tutorees.count()
     number_tutorees.fget.short_description = 'nombre de tutorés'
 
     @property
@@ -186,7 +202,6 @@ class TutoringGroup(models.Model):
         """Get all upcoming meetings."""
         today = datetime.date.today()
         upcoming_meetings = (self.tutoringmeeting_set
-                             .order_by('date')
                              .filter(date__gte=today))
         return upcoming_meetings
     upcoming_meetings.fget.short_description = 'prochaines séances'
@@ -210,6 +225,7 @@ class TutoringGroup(models.Model):
     class Meta:  # noqa
         verbose_name = 'groupe de tutorat'
         verbose_name_plural = 'groupes de tutorat'
+        ordering = ('high_school', 'level')
 
 
 class TutoringMeeting(models.Model):
@@ -233,6 +249,7 @@ class TutoringMeeting(models.Model):
     class Meta:  # noqa
         verbose_name = 'séance de tutorat'
         verbose_name_plural = 'séances de tutorat'
+        ordering = ('date',)
 
 
 class HighSchool(AddressMixin, models.Model):
@@ -270,6 +287,7 @@ class HighSchool(AddressMixin, models.Model):
 
     class Meta:  # noqa
         verbose_name = 'lycée'
+        ordering = ('name',)
 
 
 class Level(models.Model):
@@ -296,6 +314,7 @@ class Branch(models.Model):
 
     class Meta:  # noqa
         verbose_name = 'filière'
+        ordering = ('name',)
 
 
 class Country(models.Model):
@@ -309,3 +328,4 @@ class Country(models.Model):
     class Meta:  # noqa
         verbose_name = 'pays'
         verbose_name_plural = 'pays'
+        ordering = ('name', )

@@ -1,6 +1,13 @@
 """Generic test function generators and other test utilities."""
 
 
+def id_sampler(id_value):
+    """Sampler that gets model sample instance based on its id."""
+    def sample(model_cls):
+        return model_cls.objects.get(id=id_value)
+    return sample
+
+
 class GenericModelTests:
     """Class for creating generic tests for a model."""
 

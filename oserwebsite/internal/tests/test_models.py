@@ -8,8 +8,59 @@ from django.contrib.auth.models import User
 from django.utils.functional import SimpleLazyObject
 
 from internal.models import HighSchool, Tutoree, Tutor, TutoringGroup, \
-    Level, Branch, TutoringMeeting
-from internal.tests.utils import GenericModelTests
+    Level, Branch, TutoringMeeting, Country
+from internal.tests.utils import GenericModelTests, id_sampler
+
+
+class LevelModelTest(TestCase):
+    """Unit tests for Level model."""
+
+    @classmethod
+    def setUpTestData(self):
+        Level.objects.create(name='Première')
+
+    GMT = GenericModelTests(Level, sampler=id_sampler(1))
+
+    test_name_label = GMT.field_verbose_name('name', 'nom')
+    test_name_max_length = GMT.field_max_length('name', 30)
+
+    test_verbose_name = GMT.verbose_name('niveau')
+
+    test_str = GMT.str('Première')
+
+
+class BranchModelTest(TestCase):
+    """Unit tests for Branch model."""
+
+    @classmethod
+    def setUpTestData(self):
+        Branch.objects.create(name='Scientifique', short_name='S')
+
+    GMT = GenericModelTests(Branch, sampler=id_sampler(1))
+
+    test_name_label = GMT.field_verbose_name('name', 'nom')
+    test_name_max_length = GMT.field_max_length('name', 100)
+
+    test_verbose_name = GMT.verbose_name('filière')
+
+    test_str = GMT.str('Scientifique')
+
+
+class CountryModelTest(TestCase):
+    """Unit tests for Country model."""
+
+    @classmethod
+    def setUpTestData(self):
+        Country.objects.create(name='France')
+
+    GMT = GenericModelTests(Country, sampler=id_sampler(1))
+
+    test_name_label = GMT.field_verbose_name('name', 'nom')
+    test_name_max_length = GMT.field_max_length('name', 50)
+
+    test_verbose_name = GMT.verbose_name('pays')
+
+    test_str = GMT.str('France')
 
 
 class TutoreeModelTest(TestCase):
@@ -22,7 +73,7 @@ class TutoreeModelTest(TestCase):
         u = User.objects.create(first_name='Richard', last_name='Feynman')
         Tutoree.objects.create(id=1, user=u, level=level, branch=branch)
 
-    GMT = GenericModelTests(Tutoree, sampler=lambda cls: cls.objects.get(id=1))
+    GMT = GenericModelTests(Tutoree, sampler=id_sampler(1))
 
     test_high_school_label = GMT.field_verbose_name('high_school', 'lycée')
 
@@ -53,7 +104,7 @@ class TutorModelTest(TestCase):
         u = User.objects.create(first_name='Richard', last_name='Feynman')
         Tutor.objects.create(id=1, user=u, tutoring_group=group)
 
-    GMT = GenericModelTests(Tutor, sampler=lambda cls: cls.objects.get(id=1))
+    GMT = GenericModelTests(Tutor, sampler=id_sampler(1))
 
     test_tutoring_group_label = GMT.field_verbose_name('tutoring_group',
                                                        'groupe de tutorat')
@@ -85,8 +136,7 @@ class HighSchoolModelTest(TestCase):
         add(Tutor, 3, tutoring_group=group)
         add(Tutoree, 6, high_school=bidule)
 
-    GMT = GenericModelTests(HighSchool,
-                            sampler=lambda cls: cls.objects.get(id=1))
+    GMT = GenericModelTests(HighSchool, sampler=id_sampler(1))
 
     test_name_label = GMT.field_verbose_name('name', 'nom')
     test_name_max_length = GMT.field_max_length('name', 100)
@@ -123,8 +173,7 @@ class TutoringGroupModelTest(TestCase):
             TutoringMeeting.objects.create(id=i + 6, tutoring_group=group,
                                            date=date)
 
-    GMT = GenericModelTests(TutoringGroup,
-                            sampler=lambda cls: cls.objects.get(id=1))
+    GMT = GenericModelTests(TutoringGroup, sampler=id_sampler(1))
 
     test_name_label = GMT.field_verbose_name('name', 'nom')
 

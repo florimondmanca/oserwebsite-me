@@ -65,7 +65,7 @@ class Profile(AddressMixin, models.Model):
     username : str
     """
 
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, verbose_name='utilisateur')
     birthday = models.DateField('date de naissance',
                                 null=True, blank=True)
     phone = models.CharField('téléphone',
@@ -139,6 +139,7 @@ class Tutor(Profile):
     @property
     def high_school(self):
         return self.tutoring_group.high_school
+    high_school.fget.short_description = 'lycée'
 
     def get_absolute_url(self):
         return reverse('tutor-detail', args=[str(self.id)])
@@ -159,56 +160,39 @@ class TutoringGroup(models.Model):
     def number_tutors(self):
         """Number of tutors in this group."""
         return self.tutor_set.count()
-    number_tutors.fget.short_description = 'Nombre de tuteurs'
+    number_tutors.fget.short_description = 'nombre de tuteurs'
 
     @property
     def number_tutorees(self):
         """Number of tutorees in this group."""
         return self.tutoree_set.count()
-    number_tutorees.fget.short_description = 'Nombre de tutorés'
+    number_tutorees.fget.short_description = 'nombre de tutorés'
 
     @property
     def number_meetings(self):
         """Number of meetings for this group."""
         return self.tutoringmeeting_set.count()
-    number_meetings.fget.short_description = 'Nombre de séances'
+    number_meetings.fget.short_description = 'nombre de séances'
 
-    def upcoming_meetings_first(self, first=5):
-        """Get a list of the next upcoming meetings i.e. those after today).
-
-        Parameters
-        ----------
-        first : int, optional
-            The number of upcoming meetings to get (default is 5).
-            Pass None to get all upcoming meetings.
-        """
+    @property
+    def upcoming_meetings(self):
+        """Get all upcoming meetings."""
         today = datetime.date.today()
         upcoming_meetings = (self.tutoringmeeting_set
                              .order_by('date')
                              .filter(date__gte=today))
-        return upcoming_meetings[:first]
+        return upcoming_meetings
+    upcoming_meetings.fget.short_description = 'prochaines séances'
 
-    def upcoming_meetings(self):
-        """Get all upcoming meetings."""
-        return self.upcoming_meetings_first(None)
-
-    def past_meetings_first(self, first=5):
-        """Get a list of the the past meetings (i.e. those before today).
-
-        Parameters
-        first : int, optional
-            The number of past meetings to get (default is 5).
-            Pass None to get all past meetings.
-        """
+    @property
+    def past_meetings(self):
+        """Get all past meetings."""
         today = datetime.date.today()
         past_meetings = (self.tutoringmeeting_set
                          .order_by('-date')
                          .filter(date__lt=today))
-        return past_meetings[:first]
-
-    def past_meetings(self):
-        """Get all past meetings."""
-        return self.past_meetings_first(None)
+        return past_meetings
+    past_meetings.fget.short_description = 'séances passées'
 
     def get_absolute_url(self):
         return reverse('tutoringgroup-detail', args=[str(self.id)])

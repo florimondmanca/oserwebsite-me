@@ -1,11 +1,42 @@
 {% extends "internal/base.html" %}
+{% load static %}
+
+{% block styles %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/highschool_detail.css' %}">
+{% endblock %}
 
 {% block content %}
 <h1>{{ high_school }}</h1>
+<h3>{{ high_school.city }}</h3>
 
-<ul>
-  <li>Adresse : {{ high_school.address_inline }}</li>
-  <li>Nombre de tutorés dans ce lycée : {{ high_school.number_tutorees }} (<a href="{% url 'highschool-tutoree-list' high_school.id %}">liste</a>)</li>
-  <li>Nombre de tuteurs pour ce lycée : {{ high_school.number_tutors }}</li>
-</ul>
+<div class="wrapper">
+  <div class="tutor-list card bg-light">
+    <div class="card-body">
+      <h5 class="card-title">
+        Tuteurs
+        <span class="badge badge-pill badge-secondary ">{{ high_school.number_tutors }}</span>
+      </h5>
+    </div>
+    <ul class="list-group list-group-flush">
+      {% for tutor in high_school.tutors %}
+        <a class="list-group-item list-group-item-action" href="{{ tutor.get_absolute_url }}">{{ tutor }}</a>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="tutoree-list card bg-light">
+    <div class="card-body">
+      <h5 class="card-title">
+        Tutorés
+        <span class="badge badge-pill badge-secondary ">{{ high_school.number_tutorees }}</span>
+      </h5>
+    </div>
+    <ul class="list-group list-group-flush">
+      {% for tutoree in high_school.tutorees %}
+        <a class="list-group-item list-group-item-action" href="{{ tutoree.get_absolute_url }}">{{ tutoree }}</a>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
 {% endblock %}

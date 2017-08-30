@@ -99,8 +99,9 @@ class TutorModelTest(TestCase):
     @classmethod
     def setUpTestData(self):
         self.bidule = HighSchool.objects.create(name='Lycée Bidule')
-        group = TutoringGroup.objects.create(name='Groupe',
-                                             high_school=self.bidule)
+        level = Level.objects.create(name='Première')
+        group = TutoringGroup.objects.create(high_school=self.bidule,
+                                             level=level)
         u = User.objects.create(first_name='Richard', last_name='Feynman')
         Tutor.objects.create(id=1, user=u, tutoring_group=group)
 
@@ -126,7 +127,8 @@ class HighSchoolModelTest(TestCase):
     @classmethod
     def setUpTestData(self):
         bidule = HighSchool.objects.create(id=1, name='Lycée Bidule')
-        group = TutoringGroup.objects.create(high_school=bidule)
+        level = Level.objects.create(id=1, name='Première')
+        group = TutoringGroup.objects.create(high_school=bidule, level=level)
 
         def add(cls, number, **kwargs):
             for i in range(number):
@@ -155,8 +157,10 @@ class TutoringGroupModelTest(TestCase):
 
     @classmethod
     def setUpTestData(self):
-        group = TutoringGroup.objects.create(id=1,
-                                             name='Lycée Bidule (Premières)')
+        bidule = HighSchool.objects.create(id=1, name='Lycée Bidule')
+        level = Level.objects.create(id=1, name='Première')
+        group = TutoringGroup.objects.create(id=1, high_school=bidule,
+                                             level=level)
 
         def add(cls, number, **kwargs):
             for i in range(number):
@@ -175,9 +179,12 @@ class TutoringGroupModelTest(TestCase):
 
     GMT = GenericModelTests(TutoringGroup, sampler=id_sampler(1))
 
-    test_name_label = GMT.field_verbose_name('name', 'nom')
-
     test_high_school_label = GMT.field_verbose_name('high_school', 'lycée')
+
+    test_level_label = GMT.field_verbose_name('level', 'niveau')
+
+    test_name_label = GMT.property_verbose_name('name', 'nom')
+    test_name_value = GMT.property_value('name', 'Lycée Bidule (Premières)')
 
     test_number_tutors_label = GMT.property_verbose_name('number_tutors',
                                                          'nombre de tuteurs')
@@ -215,3 +222,8 @@ class TutoringGroupModelTest(TestCase):
     test_get_absolute_url = GMT.absolute_url('/internal/groupe/1/')
     test_verbose_name = GMT.verbose_name('groupe de tutorat')
     test_str = GMT.str('Lycée Bidule (Premières)')
+
+
+# TODO TutoringMeetingModelTest
+# TODO AddressMixinTest
+# TODO ProfileModelTest

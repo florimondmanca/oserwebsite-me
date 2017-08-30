@@ -28,10 +28,8 @@ urlpatterns += [
 urlpatterns += [
     url(r'^lycee/(?P<pk>\d+)/$', views.HighSchoolDetailView.as_view(),
         name='highschool-detail'),
-    url(r'^lycee/(?P<pk>\d+)/tutores/$',
-        views.HighSchoolTutoreeListView.as_view(),
-        name='highschool-tutoree-list'),
 ]
+
 
 # Tutoring group views
 urlpatterns += [

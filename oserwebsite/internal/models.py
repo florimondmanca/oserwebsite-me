@@ -151,10 +151,17 @@ class Tutor(Profile):
 class TutoringGroup(models.Model):
     """Model representing a tutoring group."""
 
-    name = models.CharField('nom', max_length=100)
     high_school = models.ForeignKey('HighSchool',
                                     models.SET_NULL, null=True,
                                     verbose_name='lycée')
+    level = models.ForeignKey('Level',
+                              models.SET_NULL, null=True,
+                              verbose_name='niveau')
+
+    @property
+    def name(self):
+        return '{} ({}s)'.format(self.high_school, str(self.level).title())
+    name.fget.short_description = 'nom'
 
     @property
     def number_tutors(self):
@@ -240,9 +247,20 @@ class HighSchool(AddressMixin, models.Model):
 
     @property
     def number_tutors(self):
-        """Count how many tutors operte in the school."""
-        tutors = Tutor.objects.filter(tutoring_group__high_school=self)
-        return tutors.count()
+        """Count how many tutors operate in the school."""
+        return self.tutors.count()
+
+    @property
+    def tutorees(self):
+        """Return a query containing the tutorees in the school."""
+        tutorees = self.tutoree_set.all()
+        return tutorees
+
+    @property
+    def tutors(self):
+        """Return a query containing the tutors that operate in the school."""
+        tutors = Tutor.objects.filter(tutoring_group__high_school=self).all()
+        return tutors
 
     def get_absolute_url(self):
         return reverse('highschool-detail', args=[str(self.id)])

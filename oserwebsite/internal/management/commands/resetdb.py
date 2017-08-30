@@ -26,32 +26,39 @@ replace its contents with pre-defined ones. Continue? (y/n) """
         call_command('flush')
         self.stdout.write(self.style.NOTICE('Please create a new super user:'))
         call_command('createsuperuser')
+        superuser = User.objects.filter(is_superuser=True).first()
+        superuser.first_name = input('Superuser first name: ') or ''
+        superuser.last_name = input('Superuser last name: ') or ''
+        superuser.save()
+        self.stdout.write('Successfully set superuser first and last name.')
 
-        usernames = ['overlookedtrophy',
-                     'orioletravel',
-                     'barsswimmer',
-                     'coaticoloured',
-                     'draggingnoodle',
-                     'peevishoperand',
-                     'coigachslanders',
-                     'pizzlecaribou',
-                     'languagesoloman',
-                     'milksopdouble',
-                     'analogylaptops',
-                     'antigravitypub',
-                     'thingavel',
-                     'horatiopioneering',
-                     'rearendanger',
-                     'cropleyhumidity',
-                     'chimpritzy',
-                     'cultivatedcitrine',
-                     'toshmild',
-                     'afocalcompounds',
-                     'respectreverse',
-                     'incubateperl',
-                     'swinhoehill',
-                     'daddyremove',
-                     'camelpickled']
+        usernames = [
+            'overlookedtrophy',
+            'orioletravel',
+            'barsswimmer',
+            'coaticoloured',
+            'draggingnoodle',
+            'peevishoperand',
+            'coigachslanders',
+            'pizzlecaribou',
+            'languagesoloman',
+            'milksopdouble',
+            'analogylaptops',
+            'antigravitypub',
+            'thingavel',
+            'horatiopioneering',
+            'rearendanger',
+            'cropleyhumidity',
+            'chimpritzy',
+            'cultivatedcitrine',
+            'toshmild',
+            'afocalcompounds',
+            'respectreverse',
+            'incubateperl',
+            'swinhoehill',
+            'daddyremove',
+            'camelpickled'
+        ]
         for i in range(40):
             usernames.append(
                 random.choice(usernames)[:10] + random.choice(usernames)[:10])
@@ -140,14 +147,15 @@ replace its contents with pre-defined ones. Continue? (y/n) """
         n_groups = 10
         for i in range(n_groups):
             high_school = random.choice(HighSchool.objects.all())
-            level = random.choice(Level.objects.all()).name
-            group_name = '{} ({}s)'.format(high_school.name, level)
-            group = TutoringGroup.objects.create(name=group_name,
-                                                 high_school=high_school)
+            level = random.choice(Level.objects.all())
+            group = TutoringGroup.objects.create(high_school=high_school,
+                                                 level=level)
             group.save()
         self.stdout.write('Created {} tutoring groups'.format(n_groups))
 
         # create users
+        n_tutors = 0
+        n_tutorees = 0
         for username in usernames:
             u = User.objects.create_user(
                 username=username,
@@ -157,16 +165,14 @@ replace its contents with pre-defined ones. Continue? (y/n) """
             u.save()
 
             status = random.choice(('tutor', 'tutoree', 'tutoree'))
-            n_tutors = 0
-            n_tutorees = 0
             if status == 'tutor':
                 tutor = Tutor.objects.create(
                     user=u,
                     **random_address(),
                     tutoring_group=random.choice(TutoringGroup.objects.all()),
                 )
-                n_tutors += 1
                 tutor.save()
+                n_tutors += 1
             elif status == 'tutoree':
                 tutoree = Tutoree.objects.create(
                     user=u,
@@ -176,10 +182,29 @@ replace its contents with pre-defined ones. Continue? (y/n) """
                     branch=random.choice(Branch.objects.all()),
                     tutoring_group=random.choice(TutoringGroup.objects.all()),
                 )
-                n_tutorees += 1
                 tutoree.save()
+                n_tutorees += 1
         self.stdout.write('Created {} users ({} tutorees and {} tutors)'
                           .format(len(usernames), n_tutorees, n_tutors))
+
+        # create a tutoree called Bernard
+        bernard = User.objects.create(username='bernard',
+                                      first_name='Bernard',
+                                      last_name='Bernard',
+                                      password='onions')
+        Tutoree.objects.create(
+            user=bernard,
+            **random_address(),
+            tutoring_group=random.choice(TutoringGroup.objects.all()))
+        self.stdout.write('Created tutoree bernard')
+
+        # assign superuser as tutor
+        Tutor.objects.create(
+            user=superuser,
+            **random_address(),
+            tutoring_group=random.choice(TutoringGroup.objects.all())
+        )
+        self.stdout.write('Superuser you created was made a tutor')
 
         # create tutoring meetings
         def random_date():

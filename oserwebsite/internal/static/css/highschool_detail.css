@@ -1,0 +1,32 @@
+/*
+LAYOUT
+*/
+
+/* Mobile layout (mobile-first) */
+.wrapper {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        "tutor-list"
+        "tutoree-list";
+}
+
+.tutor-list {
+    grid-area: tutor-list;
+    margin-bottom: auto;
+}
+.tutoree-list {
+    grid-area: tutoree-list;
+    margin-bottom: auto;
+}
+
+@media only screen and (min-width: 768px) {
+    .wrapper {
+        display: grid;
+        grid-gap: 10px;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-areas:
+            ". tutor-list tutoree-list";
+    }
+}

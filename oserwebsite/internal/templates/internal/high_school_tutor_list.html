@@ -1,0 +1,10 @@
+{% extends "internal/base.html" %}
+
+{% block content %}
+<h1>Tuteurs du lycée : {{ high_school }}</h1>
+<ul>
+  {% for tutor in tutor_list %}
+    <li><a href="{{ tutor.get_absolute_url }}">{{ tutor }}</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}

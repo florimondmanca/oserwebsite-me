@@ -1,42 +1,66 @@
 {% extends "internal/base.html" %}
-{% load static %}
+{% load breadcrumbs %}
 
-{% block styles %}
+{% block breadcrumbs %}
   {{ block.super }}
-  <link rel="stylesheet" href="{% static 'css/highschool_detail.css' %}">
+  {% breadcrumb_url "Données" "database" %}
+  {% breadcrumb_url "Lycées" "highschools" %}
+  {% breadcrumb_active high_school %}
 {% endblock %}
 
 {% block content %}
-<h1>{{ high_school }}</h1>
-<h3>{{ high_school.city }}</h3>
+<div class="row">
+  <div class="col text-center">
+    <div class="jumbotron bg-light">
+      <h1 class="display-4">{{ high_school }}</h1>
+      <p>
+        Lycée ??? au sein de la cordée ??? — Niveaux ??? — {{ high_school.number_tutorees }} lycéens, {{ high_school.number_tutors }} tuteurs (encadrement ???)
+      </p>
+    </div>
+  </div>
+  <div class="col-lg-4">
+      <div class="card">
+        <div class="card-body">
+          <h4>Adresse</h4>
+          <p>{{ high_school.address }}</p>
+          <h4>Contact</h4>
+          <p>01 31 44 65 34 (Secrétariat)</p>
+        </div>
+      </div>
+  </div>
+</div>
 
-<div class="wrapper">
-  <div class="tutor-list card bg-light">
-    <div class="card-body">
-      <h5 class="card-title">
-        Tuteurs
-        <span class="badge badge-pill badge-secondary ">{{ high_school.number_tutors }}</span>
-      </h5>
+<div class="card-columns">
+  <div class="card">
+    <div class="card-header">
+      <h4 class="card-title">
+        Groupes de tutorat
+      </h4>
     </div>
     <ul class="list-group list-group-flush">
-      {% for tutor in high_school.tutors %}
-        <a class="list-group-item list-group-item-action" href="{{ tutor.get_absolute_url }}">{{ tutor }}</a>
+      {% for tutoring_group in high_school.tutoring_groups %}
+        <a class="list-group-item list-group-item-action" href="{{ tutoring_group.get_absolute_url }}">{{ tutoring_group }}</a>
       {% endfor %}
     </ul>
   </div>
 
-  <div class="tutoree-list card bg-light">
-    <div class="card-body">
-      <h5 class="card-title">
-        Tutorés
-        <span class="badge badge-pill badge-secondary ">{{ high_school.number_tutorees }}</span>
-      </h5>
-    </div>
+  <div class="card">
+    <h4 class="card-header">Lycéens <span class="badge badge-secondary">{{ high_school.number_tutorees }}</span></h4>
     <ul class="list-group list-group-flush">
       {% for tutoree in high_school.tutorees %}
-        <a class="list-group-item list-group-item-action" href="{{ tutoree.get_absolute_url }}">{{ tutoree }}</a>
+      <a class="list-group-item list-group-item-action" href="{{ tutoree.get_absolute_url }}">{{ tutoree }}</a>
       {% endfor %}
     </ul>
   </div>
+
+  <div class="card">
+    <h4 class="card-header">Tuteurs <span class="badge badge-secondary">{{ high_school.number_tutors }}</span></h4>
+    <ul class="list-group list-group-flush">
+      {% for tutor in high_school.tutors %}
+      <a class="list-group-item list-group-item-action" href="{{ tutor.get_absolute_url }}">{{ tutor }}</a>
+      {% endfor %}
+    </ul>
+  </div>
+
 </div>
 {% endblock %}

@@ -34,8 +34,16 @@
       {% endif %}
     {% endblock %}
 
+    <!-- HEADER -->
+    <header>
+      {% block header %}{% endblock %}
+      <ol class="breadcrumb" id="breadcrumb">
+        {% block breadcrumbs %}{% endblock %}
+      </ol>
+    </header>
+
     <!-- CONTENT -->
-    <div id="content">
+    <div class="container-fluid" id="content">
       {% block content %}{% endblock %}
     </div>
 
@@ -47,6 +55,13 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
       <!-- Bootstrap v4.0.0 -->
       <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+      <script type="text/javascript">
+        // remove breadcrumb if it has no nodes
+        if ($('#breadcrumb li').length < 1) {
+          $('#breadcrumb').remove();
+        }
+      </script>
     {% endblock %}
 
     <!-- FOOTER -->

@@ -1,11 +1,19 @@
 {% extends "internal/base.html" %}
+{% load breadcrumbs %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  {% breadcrumb_url "Données" "database" %}
+  {% breadcrumb_url "Groupes de tutorat" "tutoringgroups" %}
+  {% breadcrumb_active tutoring_group %}
+{% endblock %}
 
 {% block content %}
 <div class="text-center">
   <div class="jumbotron bg-light">
     <h4 class="text-muted">Groupe de tutorat</h4>
-    <h1 class="display-4"><a href="{{ tutoring_group.high_school.get_absolute_url }}">{{ tutoring_group.high_school }}</a></h1>
-    <h2>{{ tutoring_group.level }}</h2>
+    <h1 class="display-4">{{ tutoring_group }}</h1>
+  <h2><a class="nav-link" href="{{ tutoring_group.high_school.get_absolute_url }}">{{ tutoring_group.high_school }}</a></h2>
     <p>
       Année ??? — {{ tutoring_group.number_tutorees }} lycéens, {{ tutoring_group.number_tutors }} tuteurs (encadrement ???) —
       Les séances se déroulent ??? le ??? de ???h à ???h —
@@ -13,6 +21,7 @@
     </p>
   </div>
 </div>
+
 <div class="card-columns">
 
   <div class="card">
@@ -25,6 +34,7 @@
           Séances à venir
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <!-- TODO implement links to these item -->
           <a class="dropdown-item" href="#">Séances à venir</a>
           <a class="dropdown-item" href="#">Toutes les séances</a>
           <a class="dropdown-item" href="#">Séances passées</a>

@@ -261,23 +261,34 @@ class HighSchool(AddressMixin, models.Model):
     def number_tutorees(self):
         """Count how many tutorees are in the school."""
         return self.tutoree_set.count()
+    number_tutorees.fget.short_description = 'nombre de lycéens'
 
     @property
     def number_tutors(self):
         """Count how many tutors operate in the school."""
         return self.tutors.count()
+    number_tutors.fget.short_description = 'nombre de tuteurs'
 
     @property
     def tutorees(self):
         """Return a query containing the tutorees in the school."""
         tutorees = self.tutoree_set.all()
         return tutorees
+    tutorees.fget.short_description = 'lycéens'
 
     @property
     def tutors(self):
         """Return a query containing the tutors that operate in the school."""
         tutors = Tutor.objects.filter(tutoring_group__high_school=self).all()
         return tutors
+    tutors.fget.short_description = 'tuteurs'
+
+    @property
+    def tutoring_groups(self):
+        """Return tutoring groups linked to this school."""
+        tutoring_groups = self.tutoringgroup_set.all()
+        return tutoring_groups
+    tutoring_groups.fget.short_description = 'groupes de tutorat'
 
     def get_absolute_url(self):
         return reverse('highschool-detail', args=[str(self.id)])

@@ -1,10 +1,12 @@
 :root {
-    --oser-turq: rgb(0, 180, 183);
-    --oser-blue: rgb(52, 41, 126);
+    --oser-turq-naked: 0, 180, 183;
+    --oser-turq: rgb(var(--oser-turq-naked));
+    --oser-blue-naked: 52, 41, 126;
+    --oser-blue: rgb(var(--oser-blue-naked));
 }
 
 #content {
-    padding: 1em;
+    padding-top: 1em;
 }
 
 
@@ -27,4 +29,8 @@ body {
   line-height: 40px; /* Vertically center the text there */
   text-align: center;
   background-color: #f5f5f5;
+}
+
+.header-breadcrumb {
+    background-color: rgba(var(--oser-turq), .5);
 }

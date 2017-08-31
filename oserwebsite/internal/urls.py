@@ -15,7 +15,6 @@ urlpatterns = [
 urlpatterns += [
     url(r'^tutore/(?P<pk>\d+)/$', views.TutoreeDetailView.as_view(),
         name='tutoree-detail'),
-    url(r'^tutores/$', views.TutoreeListView.as_view(), name='tutoree-list'),
 ]
 
 # Tutor views

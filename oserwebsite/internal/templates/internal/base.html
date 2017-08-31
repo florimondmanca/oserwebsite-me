@@ -28,19 +28,16 @@
     {% block nav %}
       <!-- Decide which navigation to show based on user login status -->
       {% if user.is_authenticated %}
-        {% include "internal/nav.html" %}
+        {% include "internal/nav/nav.html" %}
       {% else %}
-        {% include "internal/nav_visitor.html" %}
+        {% include "internal/nav/visitor.html" %}
       {% endif %}
     {% endblock %}
 
     <!-- HEADER -->
-    <header>
-      {% block header %}{% endblock %}
-      <ol class="breadcrumb" id="breadcrumb">
+      <nav class="breadcrumb" id="breadcrumb">
         {% block breadcrumbs %}{% endblock %}
-      </ol>
-    </header>
+      </nav>
 
     <!-- CONTENT -->
     <div class="container-fluid" id="content">
@@ -58,7 +55,7 @@
 
       <script type="text/javascript">
         // remove breadcrumb if it has no nodes
-        if ($('#breadcrumb li').length < 1) {
+        if ($('#breadcrumb a').length < 1) {
           $('#breadcrumb').remove();
         }
       </script>

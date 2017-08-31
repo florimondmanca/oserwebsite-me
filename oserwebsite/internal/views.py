@@ -35,13 +35,6 @@ class TutoreeDetailView(LoginRequiredMixin, generic.DetailView):
     context_object_name = 'tutoree'
 
 
-class TutoreeListView(LoginRequiredMixin, generic.ListView):
-    """List view for Tutoree."""
-
-    model = Tutoree
-    context_object_name = 'tutoree_list'
-
-
 class TutorDetailView(LoginRequiredMixin, generic.DetailView):
     """Detail view for Tutor."""
 

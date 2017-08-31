@@ -27,6 +27,7 @@ urlpatterns += [
 urlpatterns += [
     url(r'^lycee/(?P<pk>\d+)/$', views.HighSchoolDetailView.as_view(),
         name='highschool-detail'),
+    url(r'^lycees/$', views.HighSchoolListView.as_view(), name='highschools'),
 ]
 
 

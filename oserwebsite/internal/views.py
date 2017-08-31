@@ -49,6 +49,13 @@ class HighSchoolDetailView(LoginRequiredMixin, generic.DetailView):
     context_object_name = 'high_school'
 
 
+class HighSchoolListView(LoginRequiredMixin, generic.ListView):
+    """List view for HighSchool."""
+
+    model = HighSchool
+    context_object_name = 'high_school_list'
+
+
 class TutoringGroupDetailView(LoginRequiredMixin, generic.DetailView):
     """Detail view for TutoringGroup."""
 

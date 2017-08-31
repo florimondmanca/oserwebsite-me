@@ -77,7 +77,13 @@ class TutorAdmin(admin.ModelAdmin):
 class TutoringGroupAdmin(admin.ModelAdmin):
     """Admin model for TutoringGroup."""
 
-    list_display = ('id', 'name', 'number_tutorees', 'number_tutors')
+    list_display = ('id', 'name', 'num_tutorees', 'num_tutors')
+
+    def num_tutorees(self, obj):
+        return obj.tutoree_set.count()
+
+    def num_tutors(self, obj):
+        return obj.tutor_set.count()
 
 
 @admin.register(TutoringMeeting)

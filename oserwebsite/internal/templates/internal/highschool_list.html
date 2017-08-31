@@ -1,0 +1,23 @@
+{% extends "internal/base.html" %}
+{% load breadcrumbs %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  {% breadcrumb_url "Données" "database" %}
+  {% breadcrumb_url "Lycées" "highschools" %}
+  {% breadcrumb_active high_school %}
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron text-center bg-light">
+  <h1 class="display-4">Lycées</h1>
+</div>
+
+<ul class="list-group">
+  {% for high_school in high_school_list %}
+  <a class="list-group-item list-group-item-action" href="{{ high_school.get_absolute_url }}">
+    {{ high_school }}
+  </a>
+  {% endfor %}
+</ul>
+{% endblock %}

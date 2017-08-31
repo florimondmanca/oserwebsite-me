@@ -13,9 +13,9 @@
   <div class="jumbotron bg-light">
     <h4 class="text-muted">Groupe de tutorat</h4>
     <h1 class="display-4">{{ tutoring_group }}</h1>
-  <h2><a class="nav-link" href="{{ tutoring_group.high_school.get_absolute_url }}">{{ tutoring_group.high_school }}</a></h2>
+  <h2><a href="{{ tutoring_group.high_school.get_absolute_url }}">{{ tutoring_group.high_school }}</a></h2>
     <p>
-      Année ??? — {{ tutoring_group.number_tutorees }} lycéens, {{ tutoring_group.number_tutors }} tuteurs (encadrement ???) —
+      Année ??? — {{ tutoring_group.tutoree_set.count }} lycéens, {{ tutoring_group.tutor_set.count }} tuteurs (encadrement ???) —
       Les séances se déroulent ??? le ??? de ???h à ???h —
       Tuteurs : rendez-vous ???
     </p>
@@ -49,18 +49,18 @@
   </div>
 
   <div class="card">
-    <h4 class="card-header">Lycéens <span class="badge badge-secondary">{{ tutoring_group.number_tutorees }}</span></h4>
+    <h4 class="card-header">Lycéens <span class="badge badge-secondary">{{ tutoring_group.tutoree_set.count }}</span></h4>
     <ul class="list-group list-group-flush">
-      {% for tutoree in tutoring_group.tutorees %}
+      {% for tutoree in tutoring_group.tutoree_set.all %}
       <a class="list-group-item list-group-item-action" href="{{ tutoree.get_absolute_url }}">{{ tutoree }}</a>
       {% endfor %}
     </ul>
   </div>
 
   <div class="card">
-    <h4 class="card-header">Tuteurs <span class="badge badge-secondary">{{ tutoring_group.number_tutors }}</span></h4>
+    <h4 class="card-header">Tuteurs <span class="badge badge-secondary">{{ tutoring_group.tutor_set.count }}</span></h4>
     <ul class="list-group list-group-flush">
-      {% for tutor in tutoring_group.tutors %}
+      {% for tutor in tutoring_group.tutor_set.all %}
       <a class="list-group-item list-group-item-action" href="{{ tutor.get_absolute_url }}">{{ tutor }}</a>
       {% endfor %}
     </ul>

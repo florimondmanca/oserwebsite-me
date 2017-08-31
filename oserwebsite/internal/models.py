@@ -170,34 +170,6 @@ class TutoringGroup(models.Model):
     name.fget.short_description = 'nom'
 
     @property
-    def tutors(self):
-        return self.tutor_set.all()
-    tutors.fget.short_description = 'tuteurs'
-
-    @property
-    def tutorees(self):
-        return self.tutoree_set.all()
-    tutorees.fget.short_description = 'lycéens'
-
-    @property
-    def number_tutors(self):
-        """Number of tutors in this group."""
-        return self.tutors.count()
-    number_tutors.fget.short_description = 'nombre de tuteurs'
-
-    @property
-    def number_tutorees(self):
-        """Number of tutorees in this group."""
-        return self.tutorees.count()
-    number_tutorees.fget.short_description = 'nombre de tutorés'
-
-    @property
-    def number_meetings(self):
-        """Number of meetings for this group."""
-        return self.tutoringmeeting_set.count()
-    number_meetings.fget.short_description = 'nombre de séances'
-
-    @property
     def upcoming_meetings(self):
         """Get all upcoming meetings."""
         today = datetime.date.today()
@@ -258,37 +230,9 @@ class HighSchool(AddressMixin, models.Model):
     name = models.CharField('nom', max_length=100, help_text='Nom du lycée')
 
     @property
-    def number_tutorees(self):
-        """Count how many tutorees are in the school."""
-        return self.tutoree_set.count()
-    number_tutorees.fget.short_description = 'nombre de lycéens'
-
-    @property
-    def number_tutors(self):
-        """Count how many tutors operate in the school."""
-        return self.tutors.count()
-    number_tutors.fget.short_description = 'nombre de tuteurs'
-
-    @property
-    def tutorees(self):
-        """Return a query containing the tutorees in the school."""
-        tutorees = self.tutoree_set.all()
-        return tutorees
-    tutorees.fget.short_description = 'lycéens'
-
-    @property
-    def tutors(self):
-        """Return a query containing the tutors that operate in the school."""
-        tutors = Tutor.objects.filter(tutoring_group__high_school=self).all()
-        return tutors
-    tutors.fget.short_description = 'tuteurs'
-
-    @property
-    def tutoring_groups(self):
-        """Return tutoring groups linked to this school."""
-        tutoring_groups = self.tutoringgroup_set.all()
-        return tutoring_groups
-    tutoring_groups.fget.short_description = 'groupes de tutorat'
+    def tutor_set(self):
+        """Return a queryset with the tutors that operate in the school."""
+        return Tutor.objects.filter(tutoring_group__high_school=self)
 
     def get_absolute_url(self):
         return reverse('highschool-detail', args=[str(self.id)])

@@ -4,9 +4,13 @@
 {% load static %}
 
 {% block nav_left %}
+
+  <!-- Dashboard -->
   <li class="nav-item active">
     <a href="{% url 'index' %}" class="nav-link">Tableau de bord</a>
   </li>
+
+  <!-- Tutoring -->
   <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       Mon tutorat
@@ -16,11 +20,24 @@
       <a class="dropdown-item" href="{{ profile.tutoring_group.get_absolute_url }}">Mon groupe de tutorat</a>
     </div>
   </li>
+
+  <!-- Database -->
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Base de données
+    </a>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" href="{% url 'highschools' %}">Liste des lycées</a>
+      <a class="dropdown-item" href="{% url 'tutoringgroups' %}">Liste des groupes de tutorat</a>
+    </div>
+  </li>
+
+  <!-- Q&A -->
+  <li class="nav-item"><a href="{% url 'faq' %}" class="nav-link">FAQ</a></li>
+
 {% endblock %}
 
 {% block nav_right %}
-  <!-- Q&A -->
-  <li class="nav-item"><a href="{% url 'faq' %}" class="nav-link">FAQ</a></li>
 
   <!-- splitted dropdown for Profile -->
   <li class="nav-item dropdown">

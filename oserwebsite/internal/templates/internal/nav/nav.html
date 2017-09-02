@@ -24,16 +24,16 @@
 
   <!-- splitted dropdown for Profile -->
   <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <a id="profile" class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       Profil
     </a>
     <div class="dropdown-menu dropdown-menu-right">
-      <a class="dropdown-item" href="{{ profile.get_absolute_url }}">
+      <a id="profile-see" class="dropdown-item" href="{{ profile.get_absolute_url }}">
         Voir mon profil</a>
-      <a class="dropdown-item" href="#">
+      <a id="profile-modify" class="dropdown-item" href="#">
         Modifier mon profil</a>
       <div role="separator" class="dropdown-divider"></div>
-      <a class="dropdown-item" href="{% url 'logout' %}">
+      <a id="logout" class="dropdown-item" href="{% url 'logout' %}">
         Se déconnecter</a>
     </div>
   </li>

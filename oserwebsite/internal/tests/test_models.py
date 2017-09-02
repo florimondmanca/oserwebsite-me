@@ -143,10 +143,6 @@ class HighSchoolModelTest(TestCase):
     test_name_label = GMT.field_verbose_name('name', 'nom')
     test_name_max_length = GMT.field_max_length('name', 100)
 
-    test_number_tutorees = GMT.property_value('number_tutorees', 6)
-
-    test_number_tutors = GMT.property_value('number_tutors', 3)
-
     test_get_absolute_url = GMT.absolute_url('/internal/lycee/1/')
     test_verbose_name = GMT.verbose_name('lycée')
     test_str = GMT.str('Lycée Bidule')
@@ -185,18 +181,6 @@ class TutoringGroupModelTest(TestCase):
 
     test_name_label = GMT.property_verbose_name('name', 'nom')
     test_name_value = GMT.property_value('name', 'Lycée Bidule (Premières)')
-
-    test_number_tutors_label = GMT.property_verbose_name('number_tutors',
-                                                         'nombre de tuteurs')
-    test_number_tutors = GMT.property_value('number_tutors', 3)
-
-    test_number_tutorees_label = GMT.property_verbose_name('number_tutorees',
-                                                           'nombre de tutorés')
-    test_number_tutorees = GMT.property_value('number_tutorees', 6)
-
-    test_number_meetings_label = GMT.property_verbose_name('number_meetings',
-                                                           'nombre de séances')
-    test_number_meetings = GMT.property_value('number_meetings', 9)
 
     test_upcoming_meetings_label = GMT.property_verbose_name(
         'upcoming_meetings', 'prochaines séances')

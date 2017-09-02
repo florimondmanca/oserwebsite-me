@@ -29,35 +29,42 @@ class BrandView(View):
 
 
 class TutoreeDetailView(LoginRequiredMixin, generic.DetailView):
-    """Detail view for Tutoree."""
+    """Detail of a tutoree."""
 
     model = Tutoree
     context_object_name = 'tutoree'
 
 
 class TutorDetailView(LoginRequiredMixin, generic.DetailView):
-    """Detail view for Tutor."""
+    """Detail of a tutor."""
 
     model = Tutor
     context_object_name = 'tutor'
 
 
 class HighSchoolDetailView(LoginRequiredMixin, generic.DetailView):
-    """Detail view for HighSchool."""
+    """Detail of a high school."""
 
     model = HighSchool
     context_object_name = 'high_school'
 
 
 class HighSchoolListView(LoginRequiredMixin, generic.ListView):
-    """List view for HighSchool."""
+    """List of the high schools."""
 
     model = HighSchool
     context_object_name = 'high_school_list'
 
 
 class TutoringGroupDetailView(LoginRequiredMixin, generic.DetailView):
-    """Detail view for TutoringGroup."""
+    """Detail of a tutoring group."""
 
     model = TutoringGroup
     context_object_name = 'tutoring_group'
+
+
+class TutoringGroupListView(LoginRequiredMixin, generic.ListView):
+    """List of the tutoring groups."""
+
+    model = TutoringGroup
+    context_object_name = 'tutoring_group_list'

@@ -4,18 +4,18 @@
 {% block breadcrumbs %}
   {{ block.super }}
   {% breadcrumb_url "Données" "database" %}
-  {% breadcrumb_active "Lycées" %}
+  {% breadcrumb_active "Groupes de tutorat" %}
 {% endblock %}
 
 {% block content %}
 <div class="jumbotron text-center bg-light">
-  <h1 class="display-4">Lycées</h1>
+  <h1 class="display-4">Groupes de tutorat</h1>
 </div>
 
 <ul class="list-group">
-  {% for high_school in high_school_list %}
-  <a class="list-group-item list-group-item-action" href="{{ high_school.get_absolute_url }}">
-    {{ high_school }}
+  {% for tutoring_group in tutoring_group_list %}
+  <a class="list-group-item list-group-item-action" href="{{ tutoring_group.get_absolute_url }}">
+    {{ tutoring_group }}
   </a>
   {% endfor %}
 </ul>

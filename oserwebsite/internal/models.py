@@ -100,8 +100,8 @@ class Profile(AddressMixin, models.Model):
         abstract = True
 
 
-class Tutoree(Profile):
-    """Model representing a tutoree. Inherits from Profile."""
+class Student(Profile):
+    """Model representing a student. Inherits from Profile."""
 
     high_school = models.ForeignKey('HighSchool',
                                     models.SET_NULL, null=True,
@@ -127,10 +127,10 @@ class Tutoree(Profile):
     grade.fget.short_description = 'classe'
 
     def get_absolute_url(self):
-        return reverse('tutoree-detail', args=[str(self.id)])
+        return reverse('student-detail', args=[str(self.id)])
 
     class Meta:  # noqa
-        verbose_name = 'tutoré'
+        verbose_name = 'lycéen'
         ordering = ('user__last_name', 'user__first_name')
 
 
@@ -204,7 +204,7 @@ class TutoringMeeting(models.Model):
     """Model representing a tutoring meeting.
 
     A tutoring meeting is a temporal instance of a tutoring group, i.e.
-    an event when tutors and tutorees meet to do several activities.
+    an event when tutors and students meet to do several activities.
     """
 
     date = models.DateField('date')

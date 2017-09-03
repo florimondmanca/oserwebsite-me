@@ -1,7 +1,7 @@
 """Admin models."""
 
 from django.contrib import admin
-from .models import Level, Branch, HighSchool, Tutor, Tutoree, \
+from .models import Level, Branch, HighSchool, Tutor, Student, \
     TutoringGroup, Country, TutoringMeeting
 
 
@@ -21,9 +21,9 @@ class BranchAdmin(admin.ModelAdmin):
     list_display = ('id', 'short_name', 'name',)
 
 
-@admin.register(Tutoree)
-class TutoreeAdmin(admin.ModelAdmin):
-    """Admin model for Tutoree."""
+@admin.register(Student)
+class StudentAdmin(admin.ModelAdmin):
+    """Admin model for Student."""
 
     list_display = (
         'id', 'user', 'full_name', 'email', 'phone', 'grade', 'tutoring_group',)
@@ -77,10 +77,10 @@ class TutorAdmin(admin.ModelAdmin):
 class TutoringGroupAdmin(admin.ModelAdmin):
     """Admin model for TutoringGroup."""
 
-    list_display = ('id', 'name', 'num_tutorees', 'num_tutors')
+    list_display = ('id', 'name', 'num_students', 'num_tutors')
 
-    def num_tutorees(self, obj):
-        return obj.tutoree_set.count()
+    def num_students(self, obj):
+        return obj.student_set.count()
 
     def num_tutors(self, obj):
         return obj.tutor_set.count()

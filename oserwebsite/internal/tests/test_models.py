@@ -7,7 +7,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.utils.functional import SimpleLazyObject
 
-from internal.models import HighSchool, Tutoree, Tutor, TutoringGroup, \
+from internal.models import HighSchool, Student, Tutor, TutoringGroup, \
     Level, Branch, TutoringMeeting, Country
 from internal.tests.utils import GenericModelTests, id_sampler
 
@@ -63,17 +63,17 @@ class CountryModelTest(TestCase):
     test_str = GMT.str('France')
 
 
-class TutoreeModelTest(TestCase):
-    """Unit tests for Tutoree model."""
+class StudentModelTest(TestCase):
+    """Unit tests for Student model."""
 
     @classmethod
     def setUpTestData(self):
         level = Level.objects.create(name='Première')
         branch = Branch.objects.create(name='Scientifique', short_name='S')
         u = User.objects.create(first_name='Richard', last_name='Feynman')
-        Tutoree.objects.create(id=1, user=u, level=level, branch=branch)
+        Student.objects.create(id=1, user=u, level=level, branch=branch)
 
-    GMT = GenericModelTests(Tutoree, sampler=id_sampler(1))
+    GMT = GenericModelTests(Student, sampler=id_sampler(1))
 
     test_high_school_label = GMT.field_verbose_name('high_school', 'lycée')
 
@@ -89,7 +89,7 @@ class TutoreeModelTest(TestCase):
     test_grade_value = GMT.property_value('grade', 'Première S')
 
     test_get_absolute_url = GMT.absolute_url('/internal/tutore/1/')
-    test_verbose_name = GMT.verbose_name('tutoré')
+    test_verbose_name = GMT.verbose_name('lycéen')
     test_str = GMT.str('Richard Feynman')
 
 
@@ -136,7 +136,7 @@ class HighSchoolModelTest(TestCase):
                 cls.objects.create(user=u, **kwargs)
 
         add(Tutor, 3, tutoring_group=group)
-        add(Tutoree, 6, high_school=bidule)
+        add(Student, 6, high_school=bidule)
 
     GMT = GenericModelTests(HighSchool, sampler=id_sampler(1))
 
@@ -164,7 +164,7 @@ class TutoringGroupModelTest(TestCase):
                 cls.objects.create(user=u, **kwargs)
 
         add(Tutor, 3, tutoring_group=group)
-        add(Tutoree, 6, tutoring_group=group)
+        add(Student, 6, tutoring_group=group)
 
         today = datetime.date.today()
 

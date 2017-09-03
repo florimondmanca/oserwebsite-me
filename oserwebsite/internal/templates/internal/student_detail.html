@@ -1,0 +1,10 @@
+{% extends "internal/base.html" %}
+
+{% block content %}
+<h1>{{ student }}</h1>
+<ul>
+  <li>Lycée : <a href="{{ student.high_school.get_absolute_url}}">{{ student.high_school }}</a></li>
+  <li>En classe de : {{ student.grade }}</li>
+  <li>Groupe de tutorat : <a href="{{ student.tutoring_group.get_absolute_url}}">{{ student.tutoring_group }}</a></li>
+</ul>
+{% endblock %}

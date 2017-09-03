@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand
 from django.core.management import call_command
 
 from django.contrib.auth.models import User
-from internal.models import Tutor, Tutoree, TutoringGroup, TutoringMeeting, \
+from internal.models import Tutor, Student, TutoringGroup, TutoringMeeting, \
     HighSchool, Level, Branch, Country
 
 
@@ -155,7 +155,7 @@ replace its contents with pre-defined ones. Continue? (y/n) """
 
         # create users
         n_tutors = 0
-        n_tutorees = 0
+        n_students = 0
         for username in usernames:
             u = User.objects.create_user(
                 username=username,
@@ -164,7 +164,7 @@ replace its contents with pre-defined ones. Continue? (y/n) """
                 password='onions')
             u.save()
 
-            status = random.choice(('tutor', 'tutoree', 'tutoree'))
+            status = random.choice(('tutor', 'student', 'student'))
             if status == 'tutor':
                 tutor = Tutor.objects.create(
                     user=u,
@@ -173,8 +173,8 @@ replace its contents with pre-defined ones. Continue? (y/n) """
                 )
                 tutor.save()
                 n_tutors += 1
-            elif status == 'tutoree':
-                tutoree = Tutoree.objects.create(
+            elif status == 'student':
+                student = Student.objects.create(
                     user=u,
                     **random_address(),
                     high_school=random.choice(HighSchool.objects.all()),
@@ -182,21 +182,21 @@ replace its contents with pre-defined ones. Continue? (y/n) """
                     branch=random.choice(Branch.objects.all()),
                     tutoring_group=random.choice(TutoringGroup.objects.all()),
                 )
-                tutoree.save()
-                n_tutorees += 1
-        self.stdout.write('Created {} users ({} tutorees and {} tutors)'
-                          .format(len(usernames), n_tutorees, n_tutors))
+                student.save()
+                n_students += 1
+        self.stdout.write('Created {} users ({} students and {} tutors)'
+                          .format(len(usernames), n_students, n_tutors))
 
-        # create a tutoree called Bernard
+        # create a student called Bernard
         bernard = User.objects.create(username='bernard',
                                       first_name='Bernard',
                                       last_name='Bernard',
                                       password='onions')
-        Tutoree.objects.create(
+        Student.objects.create(
             user=bernard,
             **random_address(),
             tutoring_group=random.choice(TutoringGroup.objects.all()))
-        self.stdout.write('Created tutoree bernard')
+        self.stdout.write('Created student bernard')
 
         # assign superuser as tutor
         Tutor.objects.create(

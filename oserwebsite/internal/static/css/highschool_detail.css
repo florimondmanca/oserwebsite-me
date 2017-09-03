@@ -9,15 +9,15 @@ LAYOUT
     grid-template-columns: 1fr;
     grid-template-areas:
         "tutor-list"
-        "tutoree-list";
+        "student-list";
 }
 
 .tutor-list {
     grid-area: tutor-list;
     margin-bottom: auto;
 }
-.tutoree-list {
-    grid-area: tutoree-list;
+.student-list {
+    grid-area: student-list;
     margin-bottom: auto;
 }
 
@@ -27,6 +27,6 @@ LAYOUT
         grid-gap: 10px;
         grid-template-columns: 1fr 1fr 1fr 1fr;
         grid-template-areas:
-            ". tutor-list tutoree-list";
+            ". tutor-list student-list";
     }
 }

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views import generic, View
 
-from .models import Tutoree, Tutor, HighSchool, TutoringGroup
+from .models import Student, Tutor, HighSchool, TutoringGroup
 from .forms import RegisterForm
 
 
@@ -37,7 +37,7 @@ class RegisterView(View):
             role = form.cleaned_data['role']
             more_info = {
                 form.TUTOR: 'register-tutor',
-                form.TUTOREE: 'register-tutoree',
+                form.TUTOREE: 'register-student',
             }
             return redirect('index')
         return render(request, self.template_name, {'form': form})
@@ -59,11 +59,11 @@ class BrandView(View):
             return redirect('login')
 
 
-class TutoreeDetailView(LoginRequiredMixin, generic.DetailView):
-    """Detail of a tutoree."""
+class StudentDetailView(LoginRequiredMixin, generic.DetailView):
+    """Detail of a student."""
 
-    model = Tutoree
-    context_object_name = 'tutoree'
+    model = Student
+    context_object_name = 'student'
 
 
 class TutorDetailView(LoginRequiredMixin, generic.DetailView):

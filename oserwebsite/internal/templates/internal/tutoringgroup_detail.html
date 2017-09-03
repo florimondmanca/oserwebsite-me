@@ -15,7 +15,7 @@
     <h1 class="display-4">{{ tutoring_group }}</h1>
   <h2><a href="{{ tutoring_group.high_school.get_absolute_url }}">{{ tutoring_group.high_school }}</a></h2>
     <p>
-      Année ??? — {{ tutoring_group.tutoree_set.count }} lycéens, {{ tutoring_group.tutor_set.count }} tuteurs (encadrement ???) —
+      Année ??? — {{ tutoring_group.student_set.count }} lycéens, {{ tutoring_group.tutor_set.count }} tuteurs (encadrement ???) —
       Les séances se déroulent ??? le ??? de ???h à ???h —
       Tuteurs : rendez-vous ???
     </p>
@@ -49,10 +49,10 @@
   </div>
 
   <div class="card">
-    <h4 class="card-header">Lycéens <span class="badge badge-secondary">{{ tutoring_group.tutoree_set.count }}</span></h4>
+    <h4 class="card-header">Lycéens <span class="badge badge-secondary">{{ tutoring_group.student_set.count }}</span></h4>
     <ul class="list-group list-group-flush">
-      {% for tutoree in tutoring_group.tutoree_set.all %}
-      <a class="list-group-item list-group-item-action" href="{{ tutoree.get_absolute_url }}">{{ tutoree }}</a>
+      {% for student in tutoring_group.student_set.all %}
+      <a class="list-group-item list-group-item-action" href="{{ student.get_absolute_url }}">{{ student }}</a>
       {% endfor %}
     </ul>
   </div>

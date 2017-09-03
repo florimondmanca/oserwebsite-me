@@ -12,10 +12,10 @@ urlpatterns = [
     url(r'^faq/$', views.FaqView.as_view(), name='faq'),
 ]
 
-# Tutoree views
+# Student views
 urlpatterns += [
-    url(r'^tutore/(?P<pk>\d+)/$', views.TutoreeDetailView.as_view(),
-        name='tutoree-detail'),
+    url(r'^tutore/(?P<pk>\d+)/$', views.StudentDetailView.as_view(),
+        name='student-detail'),
 ]
 
 # Tutor views

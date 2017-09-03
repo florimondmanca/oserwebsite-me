@@ -4,19 +4,19 @@ OSER internal website
 
 ## Logical model
 
-- A tutoree is a high school student signed up for the OSER tutoring program. A tutoree has a first name, a last name, a birthday, an email address, a phone number, an address, a high school and a grade and is a member of a tutoring group.
+- A student is a high school student signed up for the OSER tutoring program. A student has a first name, a last name, a birthday, an email address, a phone number, an address, a high school and a grade and is a member of a tutoring group.
 - A tutor is a member of OSER that gives tutoring classes. A tutor has a first name, a last name, a birthday, an email address, a phone number, an address and is a member of a tutoring group.
-- A tutoring group is a set of tutoree and tutors. A tutoring group meets in a high school.
-- A tutoring class is a temporal instance of a tutoring group, i.e. an event when tutorees and tutors meet to perform several activities together. A tutoring class is specific to a tutoring group, has a date and takes place in a high school.
+- A tutoring group is a set of student and tutors. A tutoring group meets in a high school.
+- A tutoring class is a temporal instance of a tutoring group, i.e. an event when students and tutors meet to perform several activities together. A tutoring class is specific to a tutoring group, has a date and takes place in a high school.
 - An address is represented by two lines (typically describing the street and house number), a city, a post code and a country.
 - A grade is a combination of a year (Seconde, Première, Terminale) with a curriculum (S, ES, L, Pro, ...).
-- Users of the internal website can login with an email address and a password. Users of the internal website are tutorees and tutors.
+- Users of the internal website can login with an email address and a password. Users of the internal website are students and tutors.
 
 ## Physical model
 
 Below are defined the tables of the OSER website database and their respective attributes.
 
-### Tutoree
+### Student
 
 - id : Integer [PK]
 - first_name : VarChar(100)

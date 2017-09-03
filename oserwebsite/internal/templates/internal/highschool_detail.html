@@ -14,7 +14,7 @@
     <div class="jumbotron bg-light">
       <h1 class="display-4">{{ high_school }}</h1>
       <p>
-        Lycée ??? au sein de la cordée ??? — Niveaux ??? — {{ high_school.tutoree_set.count }} lycéens, {{ high_school.tutor_set.count }} tuteurs (encadrement ???)
+        Lycée ??? au sein de la cordée ??? — Niveaux ??? — {{ high_school.student_set.count }} lycéens, {{ high_school.tutor_set.count }} tuteurs (encadrement ???)
       </p>
     </div>
   </div>
@@ -45,10 +45,10 @@
   </div>
 
   <div class="card">
-    <h4 class="card-header">Lycéens <span class="badge badge-secondary">{{ high_school.tutoree_set.count }}</span></h4>
+    <h4 class="card-header">Lycéens <span class="badge badge-secondary">{{ high_school.student_set.count }}</span></h4>
     <ul class="list-group list-group-flush">
-      {% for tutoree in high_school.tutoree_set.all %}
-        <a class="list-group-item list-group-item-action" href="{{ tutoree.get_absolute_url }}">{{ tutoree }}</a>
+      {% for student in high_school.student_set.all %}
+        <a class="list-group-item list-group-item-action" href="{{ student.get_absolute_url }}">{{ student }}</a>
       {% empty %}
         <li ckass="list-group-item">Pas de lycéens pour ce lycée.</li>
       {% endfor %}

@@ -1,6 +1,6 @@
 """Utility functions."""
 
-from .models import Tutor, Tutoree
+from .models import Tutor, Student
 
 
 def get_profile_or_none(user):
@@ -8,7 +8,7 @@ def get_profile_or_none(user):
     if not user:
         return None
     if user.is_authenticated():
-        profile = Tutoree.objects.filter(user=user).first()
+        profile = Student.objects.filter(user=user).first()
         if not profile:
             profile = Tutor.objects.filter(user=user).first()
         return profile

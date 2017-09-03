@@ -1,0 +1,15 @@
+<div class="form-group">
+  {{ field.label_tag }}
+  {% if addon or fa %}<div class="input-group">{% endif %}
+    {% if addon %}
+      <div class="input-group-addon">{{ addon }}</div>
+    {% endif %}
+    {% if fa %}
+      <div class="input-group-addon"><span class="fa fa-{{ fa }}"></span></div>
+    {% endif %}
+    {{ field }}
+  {% if addon or fa %}</div>{% endif %}
+  {% if field.help_text %}
+  <span class="form-text text-muted helptext">{{ field.help_text }}</span>
+  {% endif %}
+</div>

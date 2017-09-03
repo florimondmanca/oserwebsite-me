@@ -1,9 +1,13 @@
 """Internal website views."""
 
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
+from django.contrib import messages
 from django.views import generic, View
+
 from .models import Tutoree, Tutor, HighSchool, TutoringGroup
+from .forms import RegisterForm
 
 
 class IndexView(LoginRequiredMixin, generic.TemplateView):
@@ -68,3 +72,27 @@ class TutoringGroupListView(LoginRequiredMixin, generic.ListView):
 
     model = TutoringGroup
     context_object_name = 'tutoring_group_list'
+
+
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            # user = User.objects.create_user(
+            #     username=email,
+            #     password=password,
+            #     email=email,
+            #     first_name=first_name,
+            #     last_name=last_name,
+            # )
+            messages.success(request,
+                             "Le nouvel utilisateur a été créé, "
+                             "vous pouvez maintenant vous connecter.")
+            return redirect('login')
+    else:
+        form = RegisterForm()
+    return render(request, 'internal/register.html', {'form': form})

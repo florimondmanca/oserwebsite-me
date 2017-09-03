@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -69,6 +70,13 @@ TEMPLATES = [
         },
     },
 ]
+
+MESSAGE_TAGS = {
+    messages.INFO: 'alert alert-info alert-dismissible fade show',
+    messages.SUCCESS: 'alert alert-success alert-dismissible fade show',
+    messages.WARNING: 'alert alert-warning alert-dismissible fade show',
+    messages.ERROR: 'alert alert-danger alert-dismissible fade show',
+}
 
 WSGI_APPLICATION = 'oserwebsite.wsgi.application'
 

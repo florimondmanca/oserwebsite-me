@@ -4,14 +4,16 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.html import mark_safe
 
+from .models import Student, AddressMixin, Profile, TutoringGroup
+
 
 class RegisterForm(forms.Form):
-    """Form to register a tutor."""
+    """Form for user registration."""
 
-    TUTOREE = 0
-    TUTOR = 1
+    STUDENT = 'ST'
+    TUTOR = 'TU'
     ROLE_CHOICES = (
-        (TUTOREE, 'Lycéen'),
+        (STUDENT, 'Lycéen'),
         (TUTOR, 'Tuteur'),
     )
 
@@ -38,3 +40,52 @@ class RegisterForm(forms.Form):
         except User.DoesNotExist:
             pass
         return email
+
+
+class AddressFormMixin(forms.Form):
+    """Form for an address."""
+
+    def clean_line1(self):
+        return self.cleaned_data['line1'].upper()
+
+    def clean_line2(self):
+        return self.cleaned_data['line2'].upper()
+
+    def clean_post_code(self):
+        post_code = self.cleaned_data['post_code']
+        post_code = post_code.replace(' ', '')
+        try:
+            int(post_code)
+        except ValueError:
+            raise forms.ValidationError({
+                'post_code': "Le code postal doit être numérique."
+            })
+        return post_code
+
+
+class RegisterStudentForm(AddressFormMixin, forms.ModelForm):
+    """Form for student profile registration."""
+
+    class Meta:  # noqa
+        model = Student
+        fields = (
+            'line1', 'line2', 'post_code', 'city', 'country',
+            'birthday', 'phone',
+            'high_school', 'level', 'branch',
+            'user', 'tutoring_group',
+        )
+        widgets = {
+            'user': forms.HiddenInput(),
+            'tutoring_group': forms.HiddenInput(),
+        }
+
+    def compute_tutoring_group(self):
+        high_school = self.cleaned_data['high_school']
+        level = self.cleaned_data['level']
+        tutoring_group, create = TutoringGroup.objects.get_or_create(
+            high_school=high_school,
+            level=level)
+        return tutoring_group
+
+    def clean_tutoring_group(self):
+        return self.compute_tutoring_group()

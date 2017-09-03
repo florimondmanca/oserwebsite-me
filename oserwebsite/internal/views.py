@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.views import generic, View
 
 from .models import Student, Tutor, HighSchool, TutoringGroup
-from .forms import RegisterForm
+from .forms import RegisterForm, RegisterStudentForm
 
 
 class IndexView(LoginRequiredMixin, generic.TemplateView):
@@ -19,10 +19,7 @@ class IndexView(LoginRequiredMixin, generic.TemplateView):
 class RegisterView(View):
     """Register view."""
 
-    template_name = 'registration/register.html'
-    success_message = ("L'utilisateur {} a été créé. "
-                       "Vous pouvez maintenant vous connecter avec "
-                       "vos nouveaux identifiants.")
+    template_name = 'internal/register.html'
 
     def get(self, request):
         form = RegisterForm()
@@ -33,14 +30,43 @@ class RegisterView(View):
         if form.is_valid():
             data = {k: form.cleaned_data[k]
                     for k in ('first_name', 'last_name', 'email', 'password')}
-            # User.objects.create_user(username=data['email'], **data)
+            user = User.objects.create_user(username=data['email'], **data)
             role = form.cleaned_data['role']
-            more_info = {
-                form.TUTOR: 'register-tutor',
-                form.TUTOREE: 'register-student',
-            }
-            return redirect('login')
+            messages.success(request,
+                             "L'utilisateur {} a été créé."
+                             .format(user.username))
+            messages.info(request,
+                          "Veuillez compléter votre inscription ci-dessous.")
+            if role == form.TUTOR:
+                return redirect('register-tutor', pk=user.id)
+            elif role == form.STUDENT:
+                return redirect('register-student', pk=user.id)
         return render(request, self.template_name, {'form': form})
+
+
+class RegisterStudentView(View):
+    """Complementary register view for student."""
+
+    template_name = 'internal/register_student.html'
+
+    def get(self, request, pk):
+        user = User.objects.get(id=pk)
+        form = RegisterStudentForm(initial={'user': user})
+        return render(request, self.template_name, {'form': form, 'pk': pk})
+
+    def post(self, request, pk):
+        user = User.objects.get(id=pk)
+        student, create = Student.objects.get_or_create(user=user)
+        form = RegisterStudentForm(request.POST, instance=student)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+        return render(request, self.template_name, {'form': form, 'pk': pk})
+
+
+class RegisterTutorView(View):
+    """Complementary register view for tutor."""
+    pass
 
 
 class FaqView(LoginRequiredMixin, generic.TemplateView):

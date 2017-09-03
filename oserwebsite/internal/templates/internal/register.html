@@ -1,19 +1,14 @@
 {% extends "internal/base.html" %}
 {% load static %}
 
-{% block styles %}
-  {{ block.super }}
-  <link rel="stylesheet" href="{% static 'css/register.css' %}">
-{% endblock %}
-
 {% block nav %}
   {% include "internal/nav/visitor.html" %}
 {% endblock %}
 
 {% block content %}
-<div class="wrapper">
+<div class="center-wrapper">
   <!-- REGISTER FORM -->
-  <div class="register-form card bg-light">
+  <div class="form-center card bg-light" id="register-form">
     <div class="card-body">
       <h4 class="card-title">Inscription</h4>
 

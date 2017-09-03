@@ -1,7 +1,5 @@
 """Functional website tests using Selenium."""
 
-from time import sleep
-
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.contrib.auth.models import User
 
@@ -9,8 +7,10 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.common.exceptions import NoSuchElementException
 
+from .models import HighSchool, Country, Level, Branch
 
-class CustomWebDriver(webdriver.Safari):
+
+class CustomWebDriver(webdriver.Firefox):
     """Our own WebDriver with some helpers added."""
 
     def find_css(self, css_selector):
@@ -37,6 +37,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def setUp(self):
         self.wd = CustomWebDriver()
+        self.wait = WebDriverWait(self.wd, 7)
         super().setUp()
 
     def tearDown(self):
@@ -93,7 +94,7 @@ class TestLogout(SeleniumTestCase):
 
         logout_btn = self.wd.find_css('#logout')
         logout_btn.click()
-        self.wd.wait_css('.login-form')
+        self.wd.wait_css('#login-form')
 
     def test_logout(self):
         self.get('')
@@ -105,12 +106,17 @@ class TestRegisterStudent(SeleniumTestCase):
     """User registers as student."""
 
     def setUp(self):
+        HighSchool.objects.create(name="Lycée de l'Escaut")
+        Country.objects.create(name='France')
+        Level.objects.create(name='Terminale')
+        Branch.objects.create(name='Scientifique', short_name='S')
         super().setUp()
 
-    def to_register_page(self):
+    def go_to_register_page(self):
+        self.get('')
         register_link = self.wd.find_css('#register')
         register_link.click()
-        self.wd.wait_css('.register-form')
+        self.wd.wait_css('#register-form')
 
     def submit_register_details(self):
         first_name = self.wd.find_css('#id_first_name')
@@ -118,17 +124,36 @@ class TestRegisterStudent(SeleniumTestCase):
         email = self.wd.find_css('#id_email')
         password = self.wd.find_css('#id_password')
         role = Select(self.wd.find_css('#id_role'))
-        register_btn = self.wd.find_css('#register')
 
         first_name.send_keys('Bernard')
         last_name.send_keys('Leduc')
         email.send_keys('bernard.leduc@example.net')
         password.send_keys('onions88')
         role.select_by_visible_text('Lycéen')
-        register_btn.click()
-        self.wd.wait_css('.compl-form')
+
+        self.wd.find_css('#register').click()
+        self.wd.wait_css('#info-form')
+
+    def submit_student_info(self):
+        line1 = self.wd.find_css('#id_line1')
+        post_code = self.wd.find_css('#id_post_code')
+        city = self.wd.find_css('#id_city')
+        country = Select(self.wd.find_css('#id_country'))
+        high_school = Select(self.wd.find_css('#id_high_school'))
+        level = Select(self.wd.find_css('#id_level'))
+        branch = Select(self.wd.find_css('#id_branch'))
+
+        line1.send_keys('3 place des Mocassins')
+        post_code.send_keys('13500')
+        city.send_keys('Colmart')
+        country.select_by_visible_text("France")
+        high_school.select_by_visible_text("Lycée de l'Escaut")
+        level.select_by_visible_text('Terminale')
+        branch.select_by_visible_text('Scientifique')
+        self.wd.find_css('#finish').click()
+        self.wd.wait_css('#login-form')
 
     def test_register(self):
-        self.get('')
-        self.to_register_page()
+        self.go_to_register_page()
         self.submit_register_details()
+        self.submit_student_info()

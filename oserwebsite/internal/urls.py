@@ -8,13 +8,23 @@ from . import views
 urlpatterns = [
     url(r'^$', views.BrandView.as_view(), name='brand'),
     url(r'^index/$', views.IndexView.as_view(), name='index'),
-    url(r'^inscription/$', views.RegisterView.as_view(), name='register'),
     url(r'^faq/$', views.FaqView.as_view(), name='faq'),
+]
+
+# Register views
+urlpatterns += [
+    url(r'^inscription/$', views.RegisterView.as_view(), name='register'),
+    url(r'^inscription/lyceen/(?P<pk>\d+)/$',
+        views.RegisterStudentView.as_view(),
+        name='register-student'),
+    url(r'^inscription/tuteur/(?P<pk>\d+)/$',
+        views.RegisterTutorView.as_view(),
+        name='register-tutor'),
 ]
 
 # Student views
 urlpatterns += [
-    url(r'^tutore/(?P<pk>\d+)/$', views.StudentDetailView.as_view(),
+    url(r'^lyceen/(?P<pk>\d+)/$', views.StudentDetailView.as_view(),
         name='student-detail'),
 ]
 

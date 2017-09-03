@@ -1,0 +1,42 @@
+{% extends "internal/base.html" %}
+{% load static %}
+
+{% block nav %}
+  {% include "internal/nav/visitor.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="center-wrapper">
+  <!-- REGISTER FORM -->
+  <div class="form-center card bg-light" id="info-form">
+    <div class="card-body">
+      <h4 class="card-title">Informations complémentaires</h4>
+
+      {% include "form_errors.html" with form=form %}
+
+      <form method="post" action="{% url 'register-student' pk %}">
+        {% csrf_token %}
+
+        {% for field in form  %}
+          {% include "internal/forms/field.html" with field=field %}
+        {% endfor %}
+
+        <div class="form-group text-center">
+          <button type="submit" class="btn btn-primary" id="finish" value="finish">Finaliser mon inscription</button>
+          <input type="hidden" name="next" value="{{ next }}" />
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+
+  <!-- Script that adds BS classes on login form fields -->
+  <script type="text/javascript">
+    $("form [id*='id_']").addClass('form-control');
+  </script>
+{% endblock %}

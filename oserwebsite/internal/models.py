@@ -19,10 +19,10 @@ class AddressMixin(models.Model):
     """
 
     line1 = models.CharField(
-        'Ligne 1', max_length=100,
-        help_text="Rue, voie, boîte postale, nom de société")
+        'adresse (ligne 1)', max_length=100,
+        help_text="Numéro, rue, voie, nom de société, etc.")
     line2 = models.CharField(
-        'Ligne 2', max_length=100, blank=True,
+        'adresse (ligne 2)', max_length=100, blank=True,
         help_text="Bâtiment, étage, lieu-dit, etc.")
     post_code = models.CharField(
         'code postal', max_length=20)
@@ -106,7 +106,6 @@ class Student(Profile):
     high_school = models.ForeignKey('HighSchool',
                                     models.SET_NULL, null=True,
                                     verbose_name='lycée')
-
     level = models.ForeignKey('level',
                               models.SET_NULL, null=True,
                               verbose_name='niveau')
@@ -114,7 +113,7 @@ class Student(Profile):
                                models.SET_NULL, null=True,
                                verbose_name='filière')
     tutoring_group = models.ForeignKey('TutoringGroup',
-                                       models.SET_NULL, null=True,
+                                       models.SET_NULL, null=True, blank=True,
                                        verbose_name='groupe de tutorat')
 
     @property

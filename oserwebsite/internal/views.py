@@ -74,25 +74,26 @@ class TutoringGroupListView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'tutoring_group_list'
 
 
-def register(request):
-    if request.method == 'POST':
+class RegisterView(View):
+    """Register view."""
+
+    template_name = 'internal/register.html'
+    redirect_url = 'login'
+    success_message = ("L'utilisateur {} a été créé. "
+                       "Vous pouvez maintenant vous connecter avec "
+                       "vos nouveaux identifiants.")
+
+    def get(self, request):
+        form = RegisterForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
         form = RegisterForm(request.POST)
         if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            # user = User.objects.create_user(
-            #     username=email,
-            #     password=password,
-            #     email=email,
-            #     first_name=first_name,
-            #     last_name=last_name,
-            # )
+            data = {k: form.cleaned_data[k]
+                    for k in ('first_name', 'last_name', 'email', 'password')}
+            User.objects.create_user(username=data['email'], **data)
             messages.success(request,
-                             "Le nouvel utilisateur a été créé, "
-                             "vous pouvez maintenant vous connecter.")
-            return redirect('login')
-    else:
-        form = RegisterForm()
-    return render(request, 'internal/register.html', {'form': form})
+                             self.success_message.format(data['email']))
+            return redirect(self.redirect_url)
+        return render(request, self.template_name, {'form': form})

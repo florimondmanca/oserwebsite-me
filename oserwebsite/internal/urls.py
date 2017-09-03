@@ -8,7 +8,7 @@ from . import views
 urlpatterns = [
     url(r'^$', views.BrandView.as_view(), name='brand'),
     url(r'^index/$', views.IndexView.as_view(), name='index'),
-    url(r'^inscription/$', views.register, name='register'),
+    url(r'^inscription/$', views.RegisterView.as_view(), name='register'),
     url(r'^faq/$', views.FaqView.as_view(), name='faq'),
 ]
 

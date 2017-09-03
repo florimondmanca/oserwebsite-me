@@ -1,11 +1,21 @@
 # oserwebsite
 
+## Specifications
+
+See `SPECIFICATIONS.md` for general project information and functional requirements.
+
 ## Testing
 
 ### Internal website
 
-At the project root level, launch:
+Unit tests:
 
 ```
-python manage.py test internal.tests
+$ python manage.py test internal
+```
+
+Selenium functional tests (Safari web browser):
+
+```
+$ python manage.py test internal.selenium_tests
 ```

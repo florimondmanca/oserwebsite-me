@@ -39,7 +39,7 @@ class RegisterView(View):
                 form.TUTOR: 'register-tutor',
                 form.TUTOREE: 'register-student',
             }
-            return redirect('index')
+            return redirect('login')
         return render(request, self.template_name, {'form': form})
 
 

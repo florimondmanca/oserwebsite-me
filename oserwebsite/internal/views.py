@@ -16,6 +16,33 @@ class IndexView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'internal/index.html'
 
 
+class RegisterView(View):
+    """Register view."""
+
+    template_name = 'registration/register.html'
+    success_message = ("L'utilisateur {} a été créé. "
+                       "Vous pouvez maintenant vous connecter avec "
+                       "vos nouveaux identifiants.")
+
+    def get(self, request):
+        form = RegisterForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            data = {k: form.cleaned_data[k]
+                    for k in ('first_name', 'last_name', 'email', 'password')}
+            # User.objects.create_user(username=data['email'], **data)
+            role = form.cleaned_data['role']
+            more_info = {
+                form.TUTOR: 'register-tutor',
+                form.TUTOREE: 'register-tutoree',
+            }
+            return redirect('index')
+        return render(request, self.template_name, {'form': form})
+
+
 class FaqView(LoginRequiredMixin, generic.TemplateView):
     """FAQ view."""
 
@@ -72,28 +99,3 @@ class TutoringGroupListView(LoginRequiredMixin, generic.ListView):
 
     model = TutoringGroup
     context_object_name = 'tutoring_group_list'
-
-
-class RegisterView(View):
-    """Register view."""
-
-    template_name = 'internal/register.html'
-    redirect_url = 'login'
-    success_message = ("L'utilisateur {} a été créé. "
-                       "Vous pouvez maintenant vous connecter avec "
-                       "vos nouveaux identifiants.")
-
-    def get(self, request):
-        form = RegisterForm()
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request):
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            data = {k: form.cleaned_data[k]
-                    for k in ('first_name', 'last_name', 'email', 'password')}
-            User.objects.create_user(username=data['email'], **data)
-            messages.success(request,
-                             self.success_message.format(data['email']))
-            return redirect(self.redirect_url)
-        return render(request, self.template_name, {'form': form})

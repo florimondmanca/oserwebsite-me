@@ -10,7 +10,7 @@ class RegisterForm(forms.Form):
 
     TUTOREE = 0
     TUTOR = 1
-    CATEGORY_CHOICES = (
+    ROLE_CHOICES = (
         (TUTOREE, 'Lycéen'),
         (TUTOR, 'Tuteur'),
     )
@@ -23,8 +23,8 @@ class RegisterForm(forms.Form):
                                widget=forms.PasswordInput,
                                min_length=8,
                                max_length=100)
-    category = forms.ChoiceField(label="M'inscrire en tant que...",
-                                 choices=CATEGORY_CHOICES)
+    role = forms.ChoiceField(label="M'inscrire en tant que...",
+                             choices=ROLE_CHOICES)
 
     user_exists_error = mark_safe(
         "Un compte associé à cette adresse électronique existe déjà ! "

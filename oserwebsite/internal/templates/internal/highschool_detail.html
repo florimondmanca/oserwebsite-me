@@ -32,11 +32,11 @@
 </div>
 
 <div class="card-columns">
-  {% cardlist_count high_school.tutoringgroup_set title="Groupes de tutorat" %}
+  {% cardlist high_school.tutoringgroup_set title="Groupes de tutorat" count=True item_template="internal/cards/highschool_tutoringgroup_item.html" %}
 
-  {% cardlist_count high_school.student_set title="Lycéens" %}
+  {% cardlist high_school.student_set title="Lycéens" count=True %}
 
-  {% cardlist_count high_school.tutor_set title="Tuteurs" %}
+  {% cardlist high_school.tutor_set title="Tuteurs" count=True %}
 </div>
 
 {% endblock %}

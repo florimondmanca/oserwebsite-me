@@ -1,0 +1,13 @@
+{% if item.get_absolute_url %}
+<a class="list-group-item list-group-item-action" href="{{ item.get_absolute_url }}">
+{% else %}
+<li class="list-group-item">
+{% endif %}
+  {% block item_content %}
+  {{ item }}
+  {% endblock %}
+{% if item.get_absolute_url %}
+</a>
+{% else %}
+</li>
+{% endif %}

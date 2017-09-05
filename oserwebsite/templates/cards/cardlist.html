@@ -21,16 +21,15 @@ Usage:
   {% if title %}
     <h4 class="card-header">
       {{ title }}
+      {% if count %}
+      <span class="badge badge-secondary">{{ count }}</span>
+      {% endif %}
     </h4>
   {% endif %}
   {% endblock %}
   <ul class="list-group list-group-flush" {% if scroll %}style="max-height:{{ scroll }}; overflow-y: scroll;"{% endif %}>
     {% for item in items %}
-      {% if item.get_absolute_url %}
-        <a class="list-group-item list-group-item-action" href="{{ item.get_absolute_url }}">{{ item }}</a>
-      {% else %}
-        <li class="list-group-item">{{ item }}</li>
-      {% endif %}
+        {% include item_template with item=item %}
     {% empty %}
       {% if empty_msg %}
       <li class="list-group-item text-muted">{{ empty_msg }}</li>

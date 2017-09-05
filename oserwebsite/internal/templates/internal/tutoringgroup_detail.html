@@ -26,7 +26,7 @@
 
 <div class="card-columns">
   {% cardlist tutoring_group.upcoming_meetings title="Séances de tutorat" %}
-  {% cardlist_count tutoring_group.student_set title="Lycéens" %}
-  {% cardlist_count tutoring_group.tutor_set title="Tuteurs" %}
+  {% cardlist tutoring_group.student_set title="Lycéens" count=True %}
+  {% cardlist tutoring_group.tutor_set title="Tuteurs" count=True %}
 </div>
 {% endblock %}

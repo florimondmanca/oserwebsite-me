@@ -1,0 +1,9 @@
+{% extends "cards/cardlist_item.html" %}
+{% load utils %}
+
+{% block item_content %}
+  {{ item }} <br />
+  {% if item.next_meeting %}
+  {% icon "hand-o-right" %}{{ item.next_meeting.date|date:"SHORT_DATE_FORMAT" }}
+  {% endif %}
+{% endblock %}

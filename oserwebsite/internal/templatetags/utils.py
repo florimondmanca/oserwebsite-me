@@ -6,7 +6,7 @@ from django import template
 register = template.Library()
 
 
-@register.inclusion_tag('components/icon.html')
+@register.inclusion_tag('utils/icon.html')
 def icon(code):
     """Render a favicon span element."""
     return {'code': code}

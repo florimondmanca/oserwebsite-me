@@ -170,6 +170,12 @@ class TutoringGroup(models.Model):
     name.fget.short_description = 'nom'
 
     @property
+    def next_meeting(self):
+        """Get next meeting."""
+        return self.upcoming_meetings.first()
+    next_meeting.fget.short_description = 'prochaine séance'
+
+    @property
     def upcoming_meetings(self):
         """Get all upcoming meetings."""
         today = datetime.date.today()

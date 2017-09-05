@@ -32,11 +32,11 @@
 </div>
 
 <div class="card-columns">
-  {% card_list_count "Groupes de tutorat" high_school.tutoringgroup_set empty="Pas de groupes de tutorat pour ce lycée" %}
+  {% cardlist_count high_school.tutoringgroup_set title="Groupes de tutorat" %}
 
-  {% card_list_count "Lycéens" high_school.student_set empty="Pas de lycéens pour ce lycée." %}
+  {% cardlist_count high_school.student_set title="Lycéens" %}
 
-  {% card_list_count "Tuteurs" high_school.tutor_set empty="Pas de groupes de tutorat pour ce lycée." %}
+  {% cardlist_count high_school.tutor_set title="Tuteurs" %}
 </div>
 
 {% endblock %}

@@ -1,6 +1,7 @@
 {% extends "internal/base.html" %}
 {% load breadcrumbs %}
 {% load cards %}
+{% load utils %}
 
 {% block breadcrumbs %}
   {{ block.super }}
@@ -24,33 +25,8 @@
 </div>
 
 <div class="card-columns">
-  {% card_list "Séances de tutorat" tutoring_group.upcoming_meetings %}
-
-  <div class="card">
-    <div class="card-header">
-      <h4 class="card-title">
-        Séances de tutorat
-      </h4>
-      <div class="dropdown">
-        <button class="btn btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Séances à venir
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <!-- TODO implement links to these item -->
-          <a class="dropdown-item" href="#">Séances à venir</a>
-          <a class="dropdown-item" href="#">Toutes les séances</a>
-          <a class="dropdown-item" href="#">Séances passées</a>
-        </div>
-      </div>
-    </div>
-    <ul class="list-group list-group-flush">
-      {% for meeting in tutoring_group.upcoming_meetings %}
-        <a class="list-group-item list-group-item-action" href="{{ meeting.get_absolute_url }}">{{ meeting }}</a>
-      {% endfor %}
-    </ul>
-  </div>
-
-  {% card_list_count "Lycéens" tutoring_group.student_set %}
-  {% card_list_count "Tuteurs" tutoring_group.tutor_set %}
+  {% cardlist tutoring_group.upcoming_meetings title="Séances de tutorat" %}
+  {% cardlist_count tutoring_group.student_set title="Lycéens" %}
+  {% cardlist_count tutoring_group.tutor_set title="Tuteurs" %}
 </div>
 {% endblock %}

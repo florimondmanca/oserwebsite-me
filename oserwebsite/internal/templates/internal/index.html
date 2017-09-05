@@ -44,14 +44,14 @@
       <!-- Incoming tutoring classes -->
       <div class="board-1">
         <div class="card">
-          <div class="card-body">
+          <div class="card-header">
             <h4 class="card-title">Mes prochaines séances de tutorat</h4>
             <a href="{{ profile.tutoring_group.get_absolute_url }}" class="card-text">{{ profile.tutoring_group }}</a>
           </div>
           <ul class="list-group list-group-flush">
             {% for meeting in profile.tutoring_group.upcoming_meetings %}
             <li class="list-group-item">
-              {% blocktrans with meeting.date as date %}{{ date }}{% endblocktrans %}
+              {{ meeting }}
             </li>
             {% endfor %}
           </ul>
@@ -60,7 +60,7 @@
 
       <div class="board-2">
         <div class="card">
-          <div class="card-body">
+          <div class="card-header">
             <h4 class="card-title">Prochaines sorties</h4>
           </div>
           <ul class="list-group list-group-flush">

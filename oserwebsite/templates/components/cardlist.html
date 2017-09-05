@@ -13,16 +13,18 @@ count : pass any truthful value to display a counter of the elements in the list
 queryset : set of values to display in the card (must be iterable)
 
 Usage:
-< include "path/to/card_list.html" with title="My title" count=True queryset=my_queryset >
+< include "path/to/cardlist.html" with title="My title" count=True queryset=my_queryset >
 -->
 
 <div class="card">
   {% block card_header %}
-  <h4 class="card-header">
-    {{ title }}
-  </h4>
+  {% if title %}
+    <h4 class="card-header">
+      {{ title }}
+    </h4>
+  {% endif %}
   {% endblock %}
-  <ul class="list-group list-group-flush" style="max-height:300px; overflow-y: scroll;">
+  <ul class="list-group list-group-flush" {% if scroll %}style="max-height:{{ scroll }}; overflow-y: scroll;"{% endif %}>
     {% for item in items %}
       {% if item.get_absolute_url %}
         <a class="list-group-item list-group-item-action" href="{{ item.get_absolute_url }}">{{ item }}</a>
@@ -31,7 +33,7 @@ Usage:
       {% endif %}
     {% empty %}
       {% if empty_msg %}
-      <li class="list-group-item">{{ empty_msg }}</li>
+      <li class="list-group-item text-muted">{{ empty_msg }}</li>
       {% endif %}
     {% endfor %}
   </ul>

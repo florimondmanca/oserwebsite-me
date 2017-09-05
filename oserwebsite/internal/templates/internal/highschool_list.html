@@ -1,5 +1,6 @@
 {% extends "internal/base.html" %}
 {% load breadcrumbs %}
+{% load cards %}
 
 {% block breadcrumbs %}
   {{ block.super }}
@@ -12,11 +13,7 @@
   <h1 class="display-4">Lycées</h1>
 </div>
 
-<ul class="list-group">
-  {% for high_school in high_school_list %}
-  <a class="list-group-item list-group-item-action" href="{{ high_school.get_absolute_url }}">
-    {{ high_school }}
-  </a>
-  {% endfor %}
-</ul>
+
+{% cardlist high_school_list %}
+
 {% endblock %}

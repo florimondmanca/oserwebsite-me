@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.urls import reverse
+from django.template.defaultfilters import date as _date
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 import datetime
@@ -215,7 +216,7 @@ class TutoringMeeting(models.Model):
                                        verbose_name='groupe de tutorat')
 
     def __str__(self):
-        return self.date.strftime('%d %B %Y')
+        return _date(self.date, 'l j F Y')
 
     class Meta:  # noqa
         verbose_name = 'séance de tutorat'

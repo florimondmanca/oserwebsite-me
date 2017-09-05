@@ -1,5 +1,6 @@
 {% extends "internal/base.html" %}
 {% load breadcrumbs %}
+{% load cards %}
 
 {% block breadcrumbs %}
   {{ block.super }}
@@ -23,6 +24,7 @@
 </div>
 
 <div class="card-columns">
+  {% card_list "Séances de tutorat" tutoring_group.upcoming_meetings %}
 
   <div class="card">
     <div class="card-header">
@@ -48,23 +50,7 @@
     </ul>
   </div>
 
-  <div class="card">
-    <h4 class="card-header">Lycéens <span class="badge badge-secondary">{{ tutoring_group.student_set.count }}</span></h4>
-    <ul class="list-group list-group-flush">
-      {% for student in tutoring_group.student_set.all %}
-      <a class="list-group-item list-group-item-action" href="{{ student.get_absolute_url }}">{{ student }}</a>
-      {% endfor %}
-    </ul>
-  </div>
-
-  <div class="card">
-    <h4 class="card-header">Tuteurs <span class="badge badge-secondary">{{ tutoring_group.tutor_set.count }}</span></h4>
-    <ul class="list-group list-group-flush">
-      {% for tutor in tutoring_group.tutor_set.all %}
-      <a class="list-group-item list-group-item-action" href="{{ tutor.get_absolute_url }}">{{ tutor }}</a>
-      {% endfor %}
-    </ul>
-  </div>
-
+  {% card_list_count "Lycéens" tutoring_group.student_set %}
+  {% card_list_count "Tuteurs" tutoring_group.tutor_set %}
 </div>
 {% endblock %}

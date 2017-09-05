@@ -88,7 +88,7 @@ class StudentModelTest(TestCase):
 
     test_grade_value = GMT.property_value('grade', 'Première S')
 
-    test_get_absolute_url = GMT.absolute_url('/internal/tutore/1/')
+    test_get_absolute_url = GMT.absolute_url('/internal/lyceen/1/')
     test_verbose_name = GMT.verbose_name('lycéen')
     test_str = GMT.str('Richard Feynman')
 

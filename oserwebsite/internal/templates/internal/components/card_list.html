@@ -1,0 +1,38 @@
+<!--
+
+Card list with a title, an optional counter and a list group.
+Each item in the list will be rendered without extra formatting, i.e. the template only inputs {{ item }} in a list group.
+Rendering of each group item will be :
+- "a .list-group-item .list-group-item-action" if item have a get_absolute_url() method
+- "li .list-group-item" otherwise.
+List group becomes scrollable if more than 300px high.
+
+Parameters:
+title : title of the card
+count : pass any truthful value to display a counter of the elements in the list next to the card title.
+queryset : set of values to display in the card (must be iterable)
+
+Usage:
+< include "path/to/card_list.html" with title="My title" count=True queryset=my_queryset >
+-->
+
+<div class="card">
+  {% block card_header %}
+  <h4 class="card-header">
+    {{ title }}
+  </h4>
+  {% endblock %}
+  <ul class="list-group list-group-flush" style="max-height:300px; overflow-y: scroll;">
+    {% for item in items %}
+      {% if item.get_absolute_url %}
+        <a class="list-group-item list-group-item-action" href="{{ item.get_absolute_url }}">{{ item }}</a>
+      {% else %}
+        <li class="list-group-item">{{ item }}</li>
+      {% endif %}
+    {% empty %}
+      {% if empty_msg %}
+      <li class="list-group-item">{{ empty_msg }}</li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</div>

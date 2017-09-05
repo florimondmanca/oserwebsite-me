@@ -1,5 +1,6 @@
 {% extends "internal/base.html" %}
 {% load breadcrumbs %}
+{% load cards %}
 
 {% block breadcrumbs %}
   {{ block.super }}
@@ -31,40 +32,11 @@
 </div>
 
 <div class="card-columns">
-  <div class="card">
-    <h4 class="card-header">
-        Groupes de tutorat <span class="badge badge-secondary">{{ high_school.tutoringgroup_set.count }}</span>
-    </h4>
-    <ul class="list-group list-group-flush">
-      {% for tutoring_group in high_school.tutoringgroup_set.all %}
-        <a class="list-group-item list-group-item-action" href="{{ tutoring_group.get_absolute_url }}">{{ tutoring_group }}</a>
-      {% empty %}
-        <li class="list-group-item">Pas de groupes de tutorat pour ce lycée.</li>
-      {% endfor %}
-    </ul>
-  </div>
+  {% card_list_count "Groupes de tutorat" high_school.tutoringgroup_set empty="Pas de groupes de tutorat pour ce lycée" %}
 
-  <div class="card">
-    <h4 class="card-header">Lycéens <span class="badge badge-secondary">{{ high_school.student_set.count }}</span></h4>
-    <ul class="list-group list-group-flush">
-      {% for student in high_school.student_set.all %}
-        <a class="list-group-item list-group-item-action" href="{{ student.get_absolute_url }}">{{ student }}</a>
-      {% empty %}
-        <li ckass="list-group-item">Pas de lycéens pour ce lycée.</li>
-      {% endfor %}
-    </ul>
-  </div>
+  {% card_list_count "Lycéens" high_school.student_set empty="Pas de lycéens pour ce lycée." %}
 
-  <div class="card">
-    <h4 class="card-header">Tuteurs <span class="badge badge-secondary">{{ high_school.tutor_set.count }}</span></h4>
-    <ul class="list-group list-group-flush">
-      {% for tutor in high_school.tutor_set.all %}
-        <a class="list-group-item list-group-item-action" href="{{ tutor.get_absolute_url }}">{{ tutor }}</a>
-      {% empty %}
-        <li class="list-group-item">Pas de tuteurs pour ce lycée.</li>
-      {% endfor %}
-    </ul>
-  </div>
-
+  {% card_list_count "Tuteurs" high_school.tutor_set empty="Pas de groupes de tutorat pour ce lycée." %}
 </div>
+
 {% endblock %}

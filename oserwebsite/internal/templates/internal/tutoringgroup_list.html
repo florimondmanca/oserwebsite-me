@@ -1,9 +1,10 @@
 {% extends "internal/base.html" %}
 {% load breadcrumbs %}
+{% load cards %}
 
 {% block breadcrumbs %}
   {{ block.super }}
-  {% breadcrumb_url "Données" "database" %}
+  {% breadcrumb_url "Données" name="database" %}
   {% breadcrumb_active "Groupes de tutorat" %}
 {% endblock %}
 
@@ -12,11 +13,6 @@
   <h1 class="display-4">Groupes de tutorat</h1>
 </div>
 
-<ul class="list-group">
-  {% for tutoring_group in tutoring_group_list %}
-  <a class="list-group-item list-group-item-action" href="{{ tutoring_group.get_absolute_url }}">
-    {{ tutoring_group }}
-  </a>
-  {% endfor %}
-</ul>
+{% cardlist tutoring_group_list title="Liste des groupes de tutorat" count=True %}
+
 {% endblock %}

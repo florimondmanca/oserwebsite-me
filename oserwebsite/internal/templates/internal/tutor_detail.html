@@ -1,4 +1,12 @@
 {% extends "internal/base.html" %}
+{% load breadcrumbs %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  {% breadcrumb_url "Données" name="database" %}
+  {% breadcrumb_url "Tuteurs" name="tutors" %}
+  {% breadcrumb_active tutor %}
+{% endblock %}
 
 {% block content %}
 <h1>{{ tutor }}</h1>

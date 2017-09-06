@@ -10,52 +10,52 @@ register = template.Library()
 
 
 @register.inclusion_tag('breadcrumb/url.html')
-def breadcrumb_url(name, view_name, *args):
+def breadcrumb_url(title, name, *args):
     """Include a Bootstrap li breadcrumb-item element containing a link.
 
     Parameters
     ----------
+    title : str
+        The title displayed on the breadcrumb.
     name : str
-        The name displayed on the breadcrumb.
-    view_name : str
-        The name of the view to the link.
-        The tag will try to reverse based on this name. If fails, the
-        url used will be "#" to avoid crashing.
+        The name of the view as defined in urls.py.
+        The tag will try to reverse based on this name. It is safe to
+        pass a non-existing view name ("#" will be used to avoid crashing).
     args : args
         Other arguments passed to reverse(view_name, args=args).
 
     Examples
     --------
-    {% breadcrumb_url "Home" "index %"}
-    {% breadcrumb_url {% url index %} %}
+    {% breadcrumb_url title="Home" name="index %"}
+    {% breadcrumb_url title="Home" {% url index %} %}
 
     """
     try:
-        view_url = reverse(view_name, args=args)
+        url = reverse(name, args=args)
     except NoReverseMatch:
-        view_url = "#"
-    return {'name': name, 'url': view_url, }
+        url = "#"
+    return {'title': title, 'url': url, }
 
 
 @register.inclusion_tag('breadcrumb/default.html')
-def breadcrumb(name):
+def breadcrumb(title):
     """Include a Bootstrap li breadcrumb-item element.
 
     Parameters
     ----------
-    name : str
-        The name displayed on the breadcrumb.
+    title : str
+        The title displayed on the breadcrumb.
     Examples
     --------
     {% breadcrumb "Home" %}
     {% breadcrumb "Products" %}
 
     """
-    return {'name': name, }
+    return {'title': title, }
 
 
 @register.inclusion_tag('breadcrumb/active.html')
-def breadcrumb_active(name):
+def breadcrumb_active(title):
     """Render a Bootstrap active breadcrumb item.
 
     Parameters
@@ -68,4 +68,4 @@ def breadcrumb_active(name):
     {% breadcrumb_active "Products" %}
 
     """
-    return {'name': name, }
+    return breadcrumb(title)

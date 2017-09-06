@@ -4,8 +4,8 @@
 
 {% block breadcrumbs %}
   {{ block.super }}
-  {% breadcrumb_url "Données" "database" %}
-  {% breadcrumb_url "Lycées" "highschools" %}
+  {% breadcrumb_url "Données" name="database" %}
+  {% breadcrumb_url "Lycées" name="highschools" %}
   {% breadcrumb_active high_school %}
 {% endblock %}
 

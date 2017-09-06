@@ -66,6 +66,7 @@ class RegisterStudentView(View):
 
 class RegisterTutorView(View):
     """Complementary register view for tutor."""
+
     pass
 
 
@@ -97,6 +98,13 @@ class TutorDetailView(LoginRequiredMixin, generic.DetailView):
 
     model = Tutor
     context_object_name = 'tutor'
+
+
+class TutorListView(LoginRequiredMixin, generic.ListView):
+    """List of the tutors."""
+
+    model = Tutor
+    context_object_name = 'tutor_list'
 
 
 class HighSchoolDetailView(LoginRequiredMixin, generic.DetailView):

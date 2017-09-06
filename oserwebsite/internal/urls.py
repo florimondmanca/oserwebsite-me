@@ -32,6 +32,7 @@ urlpatterns += [
 urlpatterns += [
     url(r'^tuteur/(?P<pk>\d+)/$', views.TutorDetailView.as_view(),
         name='tutor-detail'),
+    url(r'^tuteurs/$', views.TutorListView.as_view(), name='tutors'),
 ]
 
 # HighSchool views

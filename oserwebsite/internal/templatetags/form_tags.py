@@ -16,7 +16,7 @@ def form_field(field, addon="", icon=""):
         If passed, the field will be a form-group and the addon string
         will be rendered beside the field.
     icon : str, optional
-        Same as addon but renders an AwesomeFont icon instead of bare string.
+        Same as addon but renders an FontAwesome icon instead of bare string.
 
     """
     return {'field': field, 'icon': icon, 'addon': addon}

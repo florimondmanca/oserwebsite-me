@@ -7,7 +7,8 @@ register = template.Library()
 
 @register.inclusion_tag('cards/cardlist.html')
 def cardlist(queryset, title="", empty="", scroll=None, count=False,
-             item_template="cards/cardlist_item.html"):
+             item_template="cards/cardlist_item.html", limit=None,
+             all_url=""):
     """Render a card with title and list of items.
 
     If item provides get_absolute_url() method, item is rendered as a <a>
@@ -41,6 +42,8 @@ def cardlist(queryset, title="", empty="", scroll=None, count=False,
             empty = "Aucune données."
     if count:
         count = queryset.count()
+    if not limit:
+        limit = float('inf')
     return {
         'title': title,
         'items': queryset.all(),
@@ -48,4 +51,6 @@ def cardlist(queryset, title="", empty="", scroll=None, count=False,
         'scroll': scroll,
         'item_template': item_template,
         'count': count,
+        'limit': limit,
+        'all_url': all_url,
     }

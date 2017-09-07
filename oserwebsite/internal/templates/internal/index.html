@@ -1,7 +1,8 @@
 {% extends "internal/base.html" %}
 {% load static %}
 {% load i18n %}
-
+{% load misc_tags %}
+{% load card_tags %}
 
 {% block styles %}
   {{ block.super }}
@@ -43,25 +44,16 @@
     <div class="board">
       <!-- Incoming tutoring classes -->
       <div class="board-1">
-        <div class="card">
-          <div class="card-header">
-            <h4 class="card-title">Mes prochaines séances de tutorat</h4>
-            <a href="{{ profile.tutoring_group.get_absolute_url }}" class="card-text">{{ profile.tutoring_group }}</a>
-          </div>
-          <ul class="list-group list-group-flush">
-            {% for meeting in profile.tutoring_group.upcoming_meetings %}
-            <li class="list-group-item">
-              {{ meeting }}
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
+        {% cardlist profile.tutoring_group.upcoming_meetings title="Mes prochaines séances de tutorat" limit=5 all_url=profile.tutoring_group.get_absolute_url %}
       </div>
 
       <div class="board-2">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Prochaines sorties</h4>
+            <h4 class="card-title">
+              {% icon "map-marker" "pull-right" %}
+              Prochaines sorties
+            </h4>
           </div>
           <ul class="list-group list-group-flush">
             <li class="list-group-item">Palais de la Découverte</li>

@@ -2,6 +2,7 @@
 
 {% extends "internal/nav/base.html" %}
 {% load static %}
+{% load misc_tags %}
 
 {% block nav_left %}
 
@@ -46,12 +47,12 @@
     </a>
     <div class="dropdown-menu dropdown-menu-right">
       <a id="profile-see" class="dropdown-item" href="{{ profile.get_absolute_url }}">
-        Voir mon profil</a>
+        {% icon "user" "fw" %}Voir mon profil</a>
       <a id="profile-modify" class="dropdown-item" href="#">
-        Modifier mon profil</a>
+        {% icon "edit" "fw" %}Modifier mon profil</a>
       <div role="separator" class="dropdown-divider"></div>
       <a id="logout" class="dropdown-item" href="{% url 'logout' %}">
-        Se déconnecter</a>
+        {% icon "power-off" "fw" %}Se déconnecter</a>
     </div>
   </li>
 {% endblock %}

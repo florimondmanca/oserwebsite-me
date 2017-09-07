@@ -213,11 +213,10 @@ replace its contents with pre-defined ones. Continue? (y/n) """
             date = start + datetime.timedelta(days=delta_days)
             return date
 
-        n_meetings = 20
+        n_meetings = 100
         for i in range(n_meetings):
             meeting = TutoringMeeting.objects.create(
                 date=random_date(),
-                high_school=random.choice(HighSchool.objects.all()),
                 tutoring_group=random.choice(TutoringGroup.objects.all()),
             )
             meeting.save()

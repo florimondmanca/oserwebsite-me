@@ -29,11 +29,16 @@ Usage:
   {% endblock %}
   <ul class="list-group list-group-flush" {% if scroll %}style="max-height:{{ scroll }}; overflow-y: scroll;"{% endif %}>
     {% for item in items %}
+      {% if forloop.counter <= limit %}
         {% include item_template with item=item %}
+      {% endif %}
     {% empty %}
       {% if empty_msg %}
       <li class="list-group-item text-muted">{{ empty_msg }}</li>
       {% endif %}
     {% endfor %}
+    {% if items|length > limit %}
+      <a class="list-group-item card-link" href="{{ all_url }}">Voir plus...</a>
+    {% endif %}
   </ul>
 </div>

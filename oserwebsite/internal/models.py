@@ -214,12 +214,14 @@ class TutoringMeeting(models.Model):
     """
 
     date = models.DateField('date')
-    high_school = models.ForeignKey('HighSchool',
-                                    models.SET_NULL, null=True,
-                                    verbose_name='lycée')
     tutoring_group = models.ForeignKey('TutoringGroup',
                                        models.SET_NULL, null=True,
                                        verbose_name='groupe de tutorat')
+
+    @property
+    def high_school(self):
+        return self.tutoring_group.high_school
+    high_school.fget.short_description = 'lycée'
 
     def __str__(self):
         return _date(self.date, 'l j F Y')

@@ -37,7 +37,7 @@ Usage:
       <li class="list-group-item text-muted">{{ empty_msg }}</li>
       {% endif %}
     {% endfor %}
-    {% if items|length > limit %}
+    {% if all_url and items|length > limit %}
       <a class="list-group-item card-link" href="{{ all_url }}">Voir plus...</a>
     {% endif %}
   </ul>

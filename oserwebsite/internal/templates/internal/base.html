@@ -77,6 +77,11 @@
           $('#breadcrumb').remove();
         }
       </script>
+
+      <!-- Script that adds BS classes on form fields -->
+      <script type="text/javascript">
+        $("form [id*='id_']").addClass('form-control');
+      </script>
     {% endblock %}
 
     <!-- FOOTER -->

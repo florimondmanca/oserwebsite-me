@@ -7,7 +7,8 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.common.exceptions import NoSuchElementException
 
-from .models import HighSchool, Country, Level, Branch
+from .models import HighSchool, Country, Level, Branch, Student, Tutor, \
+    TutoringGroup
 
 
 class CustomWebDriver(webdriver.Firefox):
@@ -131,8 +132,8 @@ class TestRegisterStudent(SeleniumTestCase):
         password.send_keys('onions88')
         role.select_by_visible_text('Lycéen')
 
-        self.wd.find_css('#register').click()
-        self.wd.wait_css('#info-form')
+        self.wd.find_css('#submit').click()
+        self.wd.wait_css('#profile-form')
 
     def submit_student_info(self):
         line1 = self.wd.find_css('#id_line1')
@@ -150,10 +151,51 @@ class TestRegisterStudent(SeleniumTestCase):
         high_school.select_by_visible_text("Lycée de l'Escaut")
         level.select_by_visible_text('Terminale')
         branch.select_by_visible_text('Scientifique')
-        self.wd.find_css('#finish').click()
+        self.wd.find_css('#submit').click()
         self.wd.wait_css('#login-form')
 
     def test_register(self):
         self.go_to_register_page()
         self.submit_register_details()
         self.submit_student_info()
+        student = Student.objects.get(user__email='bernard.leduc@example.net')
+        self.assertEqual(student.first_name, 'Bernard')
+        self.assertEqual(student.last_name, 'Leduc')
+
+
+class TestRegisterTutor(SeleniumTestCase):
+    """User registers as tutor."""
+
+    def setUp(self):
+        school = HighSchool.objects.create(name="Lycée de l'Escaut")
+        Country.objects.create(name='France')
+        level = Level.objects.create(name='Terminale')
+        Branch.objects.create(name='Scientifique', short_name='S')
+        TutoringGroup.objects.create(high_school=school, level=level)
+        super().setUp()
+
+    go_to_register_page = TestRegisterStudent.go_to_register_page
+    submit_register_details = TestRegisterStudent.submit_register_details
+
+    def submit_tutor_info(self):
+        line1 = self.wd.find_css('#id_line1')
+        post_code = self.wd.find_css('#id_post_code')
+        city = self.wd.find_css('#id_city')
+        country = Select(self.wd.find_css('#id_country'))
+        tutoring_group = Select(self.wd.find_css('#id_tutoring_group'))
+
+        line1.send_keys('3 place des Mocassins')
+        post_code.send_keys('13500')
+        city.send_keys('Colmart')
+        country.select_by_visible_text("France")
+        tutoring_group.select_by_index(0)
+        self.wd.find_css('#finish').click()
+        self.wd.wait_css('#login-form')
+
+    def test_register(self):
+        self.go_to_register_page()
+        self.submit_register_details()
+        self.submit_tutor_info()
+        tutor = Tutor.objects.get(user__email='bernard.leduc@example.net')
+        self.assertEqual(tutor.first_name, 'Bernard')
+        self.assertEqual(tutor.last_name, 'Leduc')

@@ -1,0 +1,29 @@
+{% load form_tags %}
+
+<div class="center-wrapper">
+  <!-- REGISTER FORM -->
+  <div class="form-center card bg-light" id="{{ id }}">
+    <div class="card-body">
+      <h4 class="card-title">{{ title }}</h4>
+      {% if description %}
+        <p class="card-text">{{ description }}</p>
+      {% endif %}
+
+      {% include "form_errors.html" with form=form %}
+
+      <form method="post" action="{% url 'register' %}">
+        {% csrf_token %}
+
+        {% for field in form  %}
+          {% form_field field %}
+        {% endfor %}
+
+        <div class="form-group text-center">
+          <button type="submit" class="btn btn-primary" id="submit" value="submit">{{ submit_label }}</button>
+          <input type="hidden" name="next" value="{{ next }}" />
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

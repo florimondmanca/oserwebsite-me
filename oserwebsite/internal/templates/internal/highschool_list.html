@@ -1,6 +1,6 @@
 {% extends "internal/base.html" %}
-{% load breadcrumbs %}
-{% load cards %}
+{% load breadcrumb_tags %}
+{% load card_tags %}
 
 {% block breadcrumbs %}
   {{ block.super }}
@@ -12,7 +12,6 @@
 <div class="jumbotron text-center bg-light">
   <h1 class="display-4">Lycées</h1>
 </div>
-
 
 {% cardlist high_school_list title="Liste des lycées" count=True %}
 

@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.views import generic, View
 
 from .models import Student, Tutor, HighSchool, TutoringGroup
-from .forms import RegisterForm, RegisterStudentForm
+from .forms import RegisterForm, StudentProfileForm, TutorProfileForm
 
 
 class IndexView(LoginRequiredMixin, generic.TemplateView):
@@ -44,30 +44,40 @@ class RegisterView(View):
         return render(request, self.template_name, {'form': form})
 
 
-class RegisterStudentView(View):
-    """Complementary register view for student."""
+class RegisterProfileView(View):
+    """Base class for profile registering views."""
 
-    template_name = 'internal/register_student.html'
+    template_name = 'internal/register_profile.html'
+    model = None
+    form_class = None
 
     def get(self, request, pk):
         user = User.objects.get(id=pk)
-        form = RegisterStudentForm(initial={'user': user})
+        form = self.form(initial={'user': user})
         return render(request, self.template_name, {'form': form, 'pk': pk})
 
     def post(self, request, pk):
         user = User.objects.get(id=pk)
-        student, create = Student.objects.get_or_create(user=user)
-        form = RegisterStudentForm(request.POST, instance=student)
+        profile, create = self.model.objects.get_or_create(user=user)
+        form = self.form(request.POST, instance=profile)
         if form.is_valid():
             form.save()
             return redirect('login')
         return render(request, self.template_name, {'form': form, 'pk': pk})
 
 
-class RegisterTutorView(View):
-    """Complementary register view for tutor."""
+class RegisterStudentView(RegisterProfileView):
+    """Profile registering view for student."""
 
-    pass
+    model = Student
+    form = StudentProfileForm
+
+
+class RegisterTutorView(RegisterProfileView):
+    """Profile registering view for tutor."""
+
+    model = Tutor
+    form = TutorProfileForm
 
 
 class FaqView(LoginRequiredMixin, generic.TemplateView):

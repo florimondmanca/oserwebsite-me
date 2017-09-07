@@ -4,7 +4,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.html import mark_safe
 
-from .models import Student, AddressMixin, Profile, TutoringGroup
+from .models import Student, TutoringGroup, Tutor
 
 
 class RegisterForm(forms.Form):
@@ -62,20 +62,38 @@ class AddressFormMixin(forms.Form):
             })
         return post_code
 
+    class Meta:  # noqa
+        fields = (
+            'line1', 'line2', 'post_code', 'city', 'country',
+        )
 
-class RegisterStudentForm(AddressFormMixin, forms.ModelForm):
+
+class ProfileForm(forms.Form):
+    """Abstract base form for profile registration."""
+
+    class Meta:  # noqa
+        fields = (
+            'birthday', 'phone',
+            'user',
+        )
+        widgets = {
+            'user': forms.HiddenInput(),
+        }
+
+
+class StudentProfileForm(AddressFormMixin, forms.ModelForm):
     """Form for student profile registration."""
 
     class Meta:  # noqa
         model = Student
         fields = (
-            'line1', 'line2', 'post_code', 'city', 'country',
-            'birthday', 'phone',
+            *AddressFormMixin.Meta.fields,
+            *ProfileForm.Meta.fields,
             'high_school', 'level', 'branch',
-            'user', 'tutoring_group',
+            'tutoring_group',
         )
         widgets = {
-            'user': forms.HiddenInput(),
+            **ProfileForm.Meta.widgets,
             'tutoring_group': forms.HiddenInput(),
         }
 
@@ -89,3 +107,17 @@ class RegisterStudentForm(AddressFormMixin, forms.ModelForm):
 
     def clean_tutoring_group(self):
         return self.compute_tutoring_group()
+
+
+class TutorProfileForm(AddressFormMixin, forms.ModelForm):
+    """Form for tutor profile registration."""
+
+    class Meta:  # noqa
+        model = Tutor
+        fields = (
+            *ProfileForm.Meta.fields,
+            'tutoring_group',
+        )
+        widgets = {
+            **ProfileForm.Meta.widgets,
+        }

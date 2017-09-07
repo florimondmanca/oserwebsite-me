@@ -1,4 +1,4 @@
-"""Card components."""
+"""Cards-related template tags."""
 
 from django import template
 

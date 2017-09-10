@@ -44,22 +44,11 @@
     <div class="board">
       <!-- Incoming tutoring classes -->
       <div class="board-1">
-        {% cardlist profile.tutoring_group.upcoming_meetings title="Mes prochaines séances de tutorat" limit=5 all_url=profile.tutoring_group.get_absolute_url %}
+        {% cardlist profile.tutoring_group.upcoming_meetings title="Mes prochaines séances de tutorat" scroll=True all_url=profile.tutoring_group.get_absolute_url icon="calendar" %}
       </div>
 
       <div class="board-2">
-        <div class="card">
-          <div class="card-header">
-            <h4 class="card-title">
-              {% icon "map-marker" "pull-right" %}
-              Prochaines sorties
-            </h4>
-          </div>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">Palais de la Découverte</li>
-            <li class="list-group-item">Château des Ducs de Bretagne</li>
-          </ul>
-        </div>
+        {% cardlist visits title="Prochaines sorties" icon="map-marker" empty="Pas de sorties à venir." scroll=True %}
       </div>
     </div>
 

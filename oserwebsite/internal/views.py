@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views import generic, View
+import django_tables2 as tables
 
 from .models import Student, Tutor, HighSchool, TutoringGroup
 from .forms import RegisterForm, StudentProfileForm, TutorProfileForm
@@ -103,6 +104,24 @@ class StudentDetailView(LoginRequiredMixin, generic.DetailView):
     context_object_name = 'student'
 
 
+class StudentTable(tables.Table):
+
+    class Meta:  # noqa
+        model = Student
+        fields = ('user.id', 'user.last_name', 'user.first_name')
+        attrs = {
+            'class': 'table',
+        }
+
+
+class StudentListView(LoginRequiredMixin, View):
+    """List of students."""
+
+    def get(self, request):
+        table = StudentTable(Student.objects.all())
+        return render(request, 'internal/student_list.html', {'table': table})
+
+
 class TutorDetailView(LoginRequiredMixin, generic.DetailView):
     """Detail of a tutor."""
 
@@ -111,7 +130,7 @@ class TutorDetailView(LoginRequiredMixin, generic.DetailView):
 
 
 class TutorListView(LoginRequiredMixin, generic.ListView):
-    """List of the tutors."""
+    """List of tutors."""
 
     model = Tutor
     context_object_name = 'tutor_list'
@@ -128,7 +147,7 @@ class HighSchoolListView(LoginRequiredMixin, generic.ListView):
     """List of the high schools."""
 
     model = HighSchool
-    context_object_name = 'high_school_list'
+    context_object_name = 'highschool_list'
 
 
 class TutoringGroupDetailView(LoginRequiredMixin, generic.DetailView):
@@ -142,4 +161,10 @@ class TutoringGroupListView(LoginRequiredMixin, generic.ListView):
     """List of the tutoring groups."""
 
     model = TutoringGroup
-    context_object_name = 'tutoring_group_list'
+    context_object_name = 'tutoringgroup_list'
+
+
+class DatabaseView(generic.TemplateView):
+    """View for database home page."""
+
+    template_name = 'internal/database.html'

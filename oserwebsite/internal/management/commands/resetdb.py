@@ -191,7 +191,7 @@ replace its contents with pre-defined ones. Continue? (y/n) """
         bernard = User.objects.create(username='bernard',
                                       first_name='Bernard',
                                       last_name='Bernard',
-                                      password='onions')
+                                      password='onions88')
         Student.objects.create(
             user=bernard,
             **random_address(),

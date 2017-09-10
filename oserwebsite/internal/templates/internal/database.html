@@ -1,0 +1,19 @@
+{% extends "internal/base.html" %}
+{% load breadcrumb_tags %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  {% breadcrumb_active "Données" %}
+{% endblock %}
+
+{% block content %}
+<h1>Gestion de la base de données</h1>
+
+<ul>
+  <li><a href="{% url 'student-list' %}">Lycéens</a></li>
+  <li><a href="{% url 'tutor-list' %}">Tuteurs</a></li>
+  <li><a href="#">Lycées</a></li>
+  <li><a href="#">Groupes de tutorat</a></li>
+</ul>
+
+{% endblock %}

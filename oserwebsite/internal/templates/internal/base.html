@@ -17,8 +17,6 @@
       <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
       <!-- FontAwesome -->
       <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
-      <!-- Emoji -->
-      <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
       <!-- Custom style sheets -->
       <link rel="stylesheet" href="{% static 'css/common.css' %}">
     {% endblock %}
@@ -73,7 +71,7 @@
 
       <script type="text/javascript">
         // remove breadcrumb if it has no nodes
-        if ($('#breadcrumb a').length < 1) {
+        if ($('#breadcrumb .breadcrumb-item').length < 1) {
           $('#breadcrumb').remove();
         }
       </script>

@@ -1,5 +1,6 @@
 {% extends "internal/base.html" %}
 {% load breadcrumb_tags %}
+{% load misc_tags %}
 
 {% block breadcrumbs %}
   {{ block.super }}
@@ -9,10 +10,14 @@
 {% endblock %}
 
 {% block content %}
-<h1>{{ student }}</h1>
+<h1>{{ student }} <a href="#" class="btn btn-outline-primary">{% icon "edit" %} Modifier</a></h1>
 <ul>
+  <li>Prénom : {{ student.first_name}}</li>
+  <li>Nom : {{ student.last_name }}</li>
+  <li>Adresse email : {{ student.email }}</li>
+  <li>Adresse : {{ student.address_inline }}</li>
   <li>Lycée : <a href="{{ student.high_school.get_absolute_url}}">{{ student.high_school }}</a></li>
-  <li>En classe de : {{ student.grade }}</li>
+  <li>Classe : {{ student.grade }}</li>
   <li>Groupe de tutorat : <a href="{{ student.tutoring_group.get_absolute_url}}">{{ student.tutoring_group }}</a></li>
 </ul>
 {% endblock %}

@@ -11,6 +11,10 @@
 {% block content %}
 <h1>{{ tutor }}</h1>
 <ul>
+  <li>Prénom : {{ tutor.first_name}}</li>
+  <li>Nom : {{ tutor.last_name }}</li>
+  <li>Adresse email : {{ tutor.user.email }}</li>
+  <li>Adresse : {{ tutor.address_inline }}</li>
   <li>Groupe de tutorat : <a href="{{ tutor.tutoring_group.get_absolute_url }}">{{ tutor.tutoring_group }}</a></li>
   <li>Lycée de rattachement : <a href="{{ tutor.high_school.get_absolute_url}}">{{ tutor.high_school }}</a></li>
 </ul>

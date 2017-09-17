@@ -53,3 +53,8 @@ urlpatterns += [
 
         name='tutoringgroup-list'),
 ]
+
+# Visit views
+urlpatterns += [
+    url(r'^sorties/$', views.VisitListView.as_view(), name='visit-list'),
+]

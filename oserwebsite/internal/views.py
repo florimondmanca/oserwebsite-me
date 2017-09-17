@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views import generic, View
 
-from .models import Student, Tutor, HighSchool, TutoringGroup
+from .models import Student, Tutor, HighSchool, TutoringGroup, Visit
 from .forms import RegisterForm, StudentProfileForm, TutorProfileForm
 
 
@@ -150,6 +150,13 @@ class TutoringGroupListView(LoginRequiredMixin, generic.ListView):
 
     model = TutoringGroup
     context_object_name = 'tutoringgroup_list'
+
+
+class VisitListView(LoginRequiredMixin, generic.ListView):
+    """List of the visits."""
+
+    model = Visit
+    context_object_name = 'visit_list'
 
 
 class DatabaseView(generic.TemplateView):

@@ -99,11 +99,11 @@ class TutoringMeetingAdmin(admin.ModelAdmin):
 class HighSchoolAdmin(admin.ModelAdmin):
     """Admin model for HighSchool."""
 
-    list_display = ('name',)
+    list_display = ('name', 'rope')
 
     fieldsets = (
         (None, {
-            'fields': ('name',),
+            'fields': ('name', 'rope'),
         }),
         ('Addresse', {
             'fields': address_fields,
@@ -115,4 +115,23 @@ class HighSchoolAdmin(admin.ModelAdmin):
 class RopeAdmin(admin.ModelAdmin):
     """Admin model for Rope."""
 
-    list_display = ('name',)
+    list_display = ('name', 'num_highschools')
+
+    def num_highschools(self, obj):
+        return obj.highschool_set.count()
+    num_highschools.short_description = 'Lycées'
+
+
+@admin.register(models.Place)
+class PlaceAdmin(admin.ModelAdmin):
+    """Admin model for Place."""
+
+    list_display = ('name', 'address',)
+
+
+@admin.register(models.Visit)
+class VisitAdmin(admin.ModelAdmin):
+    """Admin model for Visit."""
+
+    list_display = ('title', 'place',)
+    exclude = ('students',)

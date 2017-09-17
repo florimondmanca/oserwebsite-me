@@ -1,0 +1,55 @@
+{% extends "internal/base.html" %}
+{% load breadcrumb_tags %}
+{% load card_tags %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  {% breadcrumb_url "Données" name="database" %}
+  {% breadcrumb_active "Sorties" %}
+{% endblock %}
+
+{% block content %}
+  <div class="jumbotron text-center bg-light">
+    <h1 class="display-4">Sorties</h1>
+  </div>
+
+  <ul class="nav nav-tabs justify-content-center" id="tabs">
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#incoming">Sorties à venir</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#finished">Sorties passées</a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane" id="incoming">
+      <ul class="list-group">
+        {% for visit in visit_list %}
+        {% if not visit.finished %}
+          {% include "internal/visit_item.html" with visit=visit %}
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="tab-pane" id="finished">
+      <ul class="list-group">
+        {% for visit in visit_list %}
+        {% if visit.finished %}
+          {% include "internal/visit_item.html" with visit=visit %}
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script type="text/javascript">
+    $(function() {
+      $('#tabs a:first').tab('show')
+    });
+  </script>
+{% endblock %}

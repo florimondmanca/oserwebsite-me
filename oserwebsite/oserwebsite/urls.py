@@ -22,7 +22,6 @@ from internal.views import BrandView
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^internal/', include('internal.urls')),
-    url(r'^pages/', include('django.contrib.flatpages.urls')),
 ]
 
 # allow serving static files (DEVELOPMENT ONLY)

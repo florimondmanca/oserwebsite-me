@@ -1,32 +1,32 @@
 """Admin models."""
 
 from django.contrib import admin
-from .models import Level, Branch, HighSchool, Tutor, Student, \
-    TutoringGroup, Country, TutoringMeeting
+from . import models
 
 
 # Register your models here.
 
 
-address_fields = ('line1', 'line2', 'post_code', 'city', 'country')
+address_fields = [field.name for field in models.AddressMixin._meta.fields]
+address_fields = list(filter(lambda name: name != 'id', address_fields))
 
-admin.site.register(Level)
-admin.site.register(Country)
+admin.site.register(models.Level)
+admin.site.register(models.Country)
 
 
-@admin.register(Branch)
+@admin.register(models.Branch)
 class BranchAdmin(admin.ModelAdmin):
     """Admin model for Branch."""
 
-    list_display = ('id', 'short_name', 'name',)
+    list_display = ('name', 'short_name')
 
 
-@admin.register(Student)
+@admin.register(models.Student)
 class StudentAdmin(admin.ModelAdmin):
     """Admin model for Student."""
 
     list_display = (
-        'id', 'user', 'full_name', 'email', 'phone', 'grade', 'tutoring_group',)
+        'full_name', 'user', 'email', 'phone', 'grade', 'tutoring_group',)
 
     fieldsets = (
         (None, {
@@ -47,12 +47,12 @@ class StudentAdmin(admin.ModelAdmin):
         return readonly
 
 
-@admin.register(Tutor)
+@admin.register(models.Tutor)
 class TutorAdmin(admin.ModelAdmin):
     """Admin model for Tutor."""
 
     list_display = (
-        'id', 'full_name', 'email', 'phone', 'tutoring_group')
+        'full_name', 'email', 'phone', 'tutoring_group')
 
     fieldsets = (
         (None, {
@@ -73,31 +73,33 @@ class TutorAdmin(admin.ModelAdmin):
         return readonly
 
 
-@admin.register(TutoringGroup)
+@admin.register(models.TutoringGroup)
 class TutoringGroupAdmin(admin.ModelAdmin):
     """Admin model for TutoringGroup."""
 
-    list_display = ('id', 'name', 'num_students', 'num_tutors')
+    list_display = ('name', 'num_students', 'num_tutors')
 
     def num_students(self, obj):
         return obj.student_set.count()
+    num_students.short_description = 'Lycéens'
 
     def num_tutors(self, obj):
         return obj.tutor_set.count()
+    num_tutors.short_description = 'Tuteurs'
 
 
-@admin.register(TutoringMeeting)
+@admin.register(models.TutoringMeeting)
 class TutoringMeetingAdmin(admin.ModelAdmin):
     """Admin model for TutoringMeeting."""
 
     list_display = ('id', 'date', 'high_school',)
 
 
-@admin.register(HighSchool)
+@admin.register(models.HighSchool)
 class HighSchoolAdmin(admin.ModelAdmin):
     """Admin model for HighSchool."""
 
-    list_display = ('id', 'name',)
+    list_display = ('name',)
 
     fieldsets = (
         (None, {
@@ -107,3 +109,10 @@ class HighSchoolAdmin(admin.ModelAdmin):
             'fields': address_fields,
         })
     )
+
+
+@admin.register(models.Rope)
+class RopeAdmin(admin.ModelAdmin):
+    """Admin model for Rope."""
+
+    list_display = ('name',)

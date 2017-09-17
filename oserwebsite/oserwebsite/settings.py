@@ -40,9 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'internal.apps.InternalConfig',
-    'django.contrib.sites',
-    'django.contrib.flatpages',
-    'django_tables2',
 ]
 
 MIDDLEWARE = [

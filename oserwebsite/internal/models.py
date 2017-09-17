@@ -47,8 +47,11 @@ class AddressMixin(models.Model):
     def address(self):
         return self._address_separated(sep='<br/>')
 
+    class Meta:  # noqa
+        abstract = True
 
-class Profile(AddressMixin, models.Model):
+
+class Profile(AddressMixin):
     """Abstract model representing a user profile.
 
     Attributes
@@ -131,7 +134,8 @@ class Student(Profile):
 
     class Meta:  # noqa
         verbose_name = 'lycéen'
-        ordering = ('user__last_name', 'user__first_name')
+        ordering = ('user__last_name', 'user__first_name',
+                    'high_school', 'level')
 
 
 class Tutor(Profile):
@@ -229,13 +233,14 @@ class TutoringMeeting(models.Model):
     class Meta:  # noqa
         verbose_name = 'séance de tutorat'
         verbose_name_plural = 'séances de tutorat'
-        ordering = ('date',)
+        ordering = ('date', 'tutoring_group',)
 
 
-class HighSchool(AddressMixin, models.Model):
+class HighSchool(AddressMixin):
     """Model representing a high school."""
 
     name = models.CharField('nom', max_length=100, help_text='Nom du lycée')
+    rope = models.ForeignKey('Rope', models.CASCADE, null=True)
 
     @property
     def tutor_set(self):
@@ -250,6 +255,23 @@ class HighSchool(AddressMixin, models.Model):
 
     class Meta:  # noqa
         verbose_name = 'lycée'
+        ordering = ('name',)
+
+
+class Rope(models.Model):
+    """Model representing a rope, i.e. a group of high schools.
+
+    French equivalent name : Cordée de la Réussite
+    See: http://www.cordeesdelareussite.fr
+    """
+
+    name = models.CharField('nom', max_length=100, help_text='Nom de la cordée')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:  # noqa
+        verbose_name = 'cordée'
         ordering = ('name',)
 
 

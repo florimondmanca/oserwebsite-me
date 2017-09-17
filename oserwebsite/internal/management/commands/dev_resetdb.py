@@ -8,7 +8,7 @@ from django.core.management import call_command
 
 from django.contrib.auth.models import User
 from internal.models import Tutor, Student, TutoringGroup, TutoringMeeting, \
-    HighSchool, Level, Branch, Country
+    HighSchool, Level, Branch, Country, Rope
 
 
 class Command(BaseCommand):
@@ -102,6 +102,12 @@ replace its contents with pre-defined ones. Continue? (y/n) """
             'Lycée Robert Peugeot', 'Lycée Berlioz', 'Lycée Hugues Martin',
         )
 
+        level_names = ('Seconde', 'Première', 'Terminale')
+
+        rope_names = (
+            'Cordée Michelin', 'Cordée Lemoigne', 'Cordée Open',
+        )
+
         # create countries
         Country.objects.create(name='France').save()
         self.stdout.write('Created 1 country: France')
@@ -119,10 +125,9 @@ replace its contents with pre-defined ones. Continue? (y/n) """
             }
 
         # create levels
-        Level.objects.create(name='Seconde').save()
-        Level.objects.create(name='Première').save()
-        Level.objects.create(name='Terminale').save()
-        self.stdout.write('Created 3 levels: Seconde, Première, Terminale')
+        for level_name in level_names:
+            Level.objects.create(name=level_name).save()
+        self.stdout.write('Created {} levels'.format(len(level_names)))
 
         # create branches
         Branch.objects.create(name='Scientifique', short_name='S').save()
@@ -132,10 +137,16 @@ replace its contents with pre-defined ones. Continue? (y/n) """
         Branch.objects.create(name="Professionnelle", short_name="Pro").save()
         self.stdout.write('Created 4 branches: S, L, ES, Pro')
 
+        # create ropes
+        for rope_name in rope_names:
+            Rope.objects.create(name=rope_name).save()
+        self.stdout.write('Created {} ropes'.format(len(rope_names)))
+
         # create high schools
         for name in high_school_names:
             high_school = HighSchool.objects.create(
                 name=name,
+                rope=random.choice(Rope.objects.all()),
                 **random_address(),
             )
             high_school.save()
@@ -159,6 +170,7 @@ replace its contents with pre-defined ones. Continue? (y/n) """
         for username in usernames:
             u = User.objects.create_user(
                 username=username,
+                email='{}@example.net'.format(username),
                 first_name=random.choice(first_names),
                 last_name=random.choice(last_names),
                 password='onions')

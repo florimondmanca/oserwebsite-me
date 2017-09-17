@@ -5,7 +5,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views import generic, View
-import django_tables2 as tables
 
 from .models import Student, Tutor, HighSchool, TutoringGroup
 from .forms import RegisterForm, StudentProfileForm, TutorProfileForm
@@ -104,22 +103,11 @@ class StudentDetailView(LoginRequiredMixin, generic.DetailView):
     context_object_name = 'student'
 
 
-class StudentTable(tables.Table):
-
-    class Meta:  # noqa
-        model = Student
-        fields = ('user.id', 'user.last_name', 'user.first_name')
-        attrs = {
-            'class': 'table',
-        }
-
-
-class StudentListView(LoginRequiredMixin, View):
+class StudentListView(LoginRequiredMixin, generic.ListView):
     """List of students."""
 
-    def get(self, request):
-        table = StudentTable(Student.objects.all())
-        return render(request, 'internal/student_list.html', {'table': table})
+    model = Student
+    context_object_name = 'student_list'
 
 
 class TutorDetailView(LoginRequiredMixin, generic.DetailView):

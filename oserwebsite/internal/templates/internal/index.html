@@ -41,15 +41,21 @@
     </div>
 
     <!-- Dashboard -->
-    <div class="board">
+    <div class="dashboard">
       <!-- Incoming tutoring classes -->
-      <div class="board-1">
+      <div class="dashboard-meetings">
         {% cardlist profile.tutoring_group.upcoming_meetings title="Mes prochaines séances de tutorat" scroll=True all_url=profile.tutoring_group.get_absolute_url icon="calendar" %}
       </div>
 
-      <div class="board-2">
+      <div class="dashboard-visits">
         {% cardlist visits title="Prochaines sorties" icon="map-marker" empty="Pas de sorties à venir." scroll=True %}
       </div>
+
+      <!-- OSER's Twitter feed -->
+      <div class="dashboard-tweets">
+        <a class="twitter-timeline" data-theme="light" data-link-color="#00b4b7" data-tweet-limit="5" data-lang="fr" href="https://twitter.com/OSER_CS">Tweets de OSER_CS</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+      </div>
+
     </div>
 
   </div>

@@ -10,17 +10,32 @@ LAYOUT
     grid-template-areas:
         "main"
         "requirements"
-        "board";
+        "dashboard";
 }
-
-.board {
+.main {
+    grid-area: main;
+}
+.requirements {
+    grid-area: requirements;
+}
+.dashboard {
     display:grid;
     grid-gap: 10px;
     grid-template-columns: 1fr;
     grid-template-areas:
-        "board-1"
-        "board-2";
-    grid-area: board;
+        "meetings"
+        "visits"
+        "tweets";
+    grid-area: dashboard;
+}
+.dashboard-meetings {
+    grid-area: meetings;
+}
+.dashboard-visits {
+    grid-area: visits;
+}
+.dashboard-tweets {
+    grid-area: tweets;
 }
 
 /* Larger screens layout */
@@ -30,31 +45,15 @@ LAYOUT
         grid-template-areas:
             ". main"
             ". requirements"
-            ". board"
+            ". dashboard"
     }
-    .board {
+    .dashboard {
         display:grid;
         grid-gap: 10px;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(1fr, 3);
         grid-template-areas:
-            "board-1 board-2";
+            "meetings visits tweets";
     }
-}
-
-.main {
-    grid-area: main;
-}
-
-.requirements {
-    grid-area: requirements;
-}
-
-.board-1 {
-    grid-area: board-1;
-}
-
-.board-2 {
-    grid-area: board-2;
 }
 
 

@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views import generic, View
+from django.conf import settings
 
 from .models import Student, Tutor, HighSchool, TutoringGroup, Visit
 from .forms import RegisterForm, StudentProfileForm, TutorProfileForm, \
@@ -28,7 +29,7 @@ class ContactView(LoginRequiredMixin, View):
             subject = form.cleaned_data['subject']
             message = form.cleaned_data['message']
             email_from = request.user.email
-            to = ['florimond.manca@student.ecp.fr']
+            to = settings.EMAIL_RECIPIENT
             if send_email_safe(request, subject, message, email_from, to):
                 return redirect('index')
         return render(request, self.template_name, {'form': form})

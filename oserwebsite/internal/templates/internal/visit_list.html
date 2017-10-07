@@ -25,19 +25,19 @@
   <div class="tab-content">
     <div class="tab-pane" id="incoming">
       <ul class="list-group">
-        {% for visit in visit_list %}
-        {% if not visit.finished %}
+        {% for visit in visit_list.incoming %}
           {% include "internal/visit_item.html" with visit=visit %}
-        {% endif %}
+        {% empty %}
+          <li class="list-group-item">Pas de visites à venir !</li>
         {% endfor %}
       </ul>
     </div>
     <div class="tab-pane" id="finished">
       <ul class="list-group">
-        {% for visit in visit_list %}
-        {% if visit.finished %}
+        {% for visit in visit_list.finished %}
           {% include "internal/visit_item.html" with visit=visit %}
-        {% endif %}
+        {% empty %}
+          <li class="list-group-item">Pas de visites passées !</li>
         {% endfor %}
       </ul>
     </div>

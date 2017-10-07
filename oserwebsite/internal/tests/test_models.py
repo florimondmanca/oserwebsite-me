@@ -6,64 +6,136 @@ import datetime
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.utils.functional import SimpleLazyObject
+from django.core.exceptions import FieldDoesNotExist
 
 from internal.models import HighSchool, Student, Tutor, TutoringGroup, \
     Level, Branch, TutoringMeeting, Country, Place
 from internal.tests.utils import GenericModelTests, id_sampler
 
 
-class LevelModelTest(TestCase):
+class MyTestCase(TestCase):
+    """Extends Django's test case with extra assert methods."""
+
+    def _get_field(self, obj, field_name):
+        """Get a model's field object by name."""
+        return obj._meta.get_field(field_name)
+
+    def assertVerboseName(self, model, expected):
+        """Compare a model's verbose_name meta attribute to an expected value.
+
+        Parameters
+        ---------
+        model : models.Model
+        expected : str
+        """
+        name = model._meta.verbose_name
+        self.assertEqual(name, expected)
+
+    def assertFieldVerboseName(self, obj, field_name, expected):
+        """Compare an object's field verbose_name to an expected value.
+
+        Parameters
+        ---------
+        obj : models.Model instance
+            An instance of a model.
+        field_name : str
+        expected : str
+        """
+        name = self._get_field(obj, field_name).verbose_name
+        self.assertEqual(name, expected)
+
+    def assertPropertyDescription(self, obj, prop_name, expected):
+        """Compare an object's property short_description to an expected value.
+
+        Parameters
+        ---------
+        obj : models.Model instance
+            An instance of a model.
+        prop_name : str
+        expected : str
+        """
+        prop = type(obj).__dict__[prop_name]
+        name = prop.fget.short_description
+        self.assertEqual(name, expected)
+
+    def assertMaxLength(self, obj, field_name, expected):
+        """Compare an object's field max_length to an expected value.
+
+        Typically used on CharFields.
+
+        Parameters
+        ---------
+        obj : models.Model instance
+            An instance of a model.
+        field_name : str
+            The corresponding field must have a max_length attribute.
+        expected : int
+        """
+        length = self._get_field(obj, field_name).max_length
+        self.assertEqual(length, expected)
+
+
+class LevelModelTest(MyTestCase):
     """Unit tests for Level model."""
 
     @classmethod
     def setUpTestData(self):
-        Level.objects.create(name='Première')
+        self.obj = Level.objects.create(name='Première')
 
-    gmt = GenericModelTests(Level, sampler=id_sampler(1))
+    def test_name_label(self):
+        self.assertFieldVerboseName(self.obj, 'name', 'nom')
 
-    test_name_label = gmt.field_verbose_name('name', 'nom')
-    test_name_max_length = gmt.field_max_length('name', 30)
+    def test_name_max_length(self):
+        self.assertMaxLength(self.obj, 'name', 30)
 
-    test_verbose_name = gmt.verbose_name('niveau')
+    def test_verbose_name(self):
+        self.assertVerboseName(Level, 'niveau')
 
-    test_str = gmt.str('Première')
+    def test_str(self):
+        self.assertEqual('Première', str(self.obj))
 
 
-class BranchModelTest(TestCase):
+class BranchModelTest(MyTestCase):
     """Unit tests for Branch model."""
 
     @classmethod
     def setUpTestData(self):
-        Branch.objects.create(name='Scientifique', short_name='S')
+        self.obj = Branch.objects.create(name='Scientifique', short_name='S')
 
-    gmt = GenericModelTests(Branch, sampler=id_sampler(1))
+    def test_name_label(self):
+        self.assertFieldVerboseName(self.obj, 'name', 'nom')
 
-    test_name_label = gmt.field_verbose_name('name', 'nom')
-    test_name_max_length = gmt.field_max_length('name', 100)
+    def test_name_max_length(self):
+        self.assertMaxLength(self.obj, 'name', 100)
 
-    test_verbose_name = gmt.verbose_name('filière')
+    def test_verbose_name(self):
+        self.assertVerboseName(Branch, 'filière')
 
-    test_str = gmt.str('Scientifique')
+    def test_str(self):
+        self.assertEqual('Scientifique', str(self.obj))
 
 
-class CountryModelTest(TestCase):
+class CountryModelTest(MyTestCase):
     """Unit tests for Country model."""
 
     @classmethod
     def setUpTestData(self):
-        Country.objects.create(name='France')
+        self.obj = Country.objects.create(name='France')
 
-    gmt = GenericModelTests(Country, sampler=id_sampler(1))
+    def test_name_label(self):
+        self.assertFieldVerboseName(self.obj, 'name', 'nom')
 
-    test_name_label = gmt.field_verbose_name('name', 'nom')
-    test_name_max_length = gmt.field_max_length('name', 50)
+    def test_name_max_length(self):
+        self.assertMaxLength(self.obj, 'name', 100)
 
-    test_verbose_name = gmt.verbose_name('pays')
+    def test_verbose_name(self):
+        self.assertVerboseName(Country, 'pays')
 
-    test_str = gmt.str('France')
+    def test_str(self):
+        self.assertEqual('France', str(self.obj))
 
 
-class StudentModelTest(TestCase):
+class StudentModelTest(MyTestCase):
     """Unit tests for Student model."""
 
     @classmethod
@@ -71,26 +143,28 @@ class StudentModelTest(TestCase):
         level = Level.objects.create(name='Première')
         branch = Branch.objects.create(name='Scientifique', short_name='S')
         u = User.objects.create(first_name='Richard', last_name='Feynman')
-        Student.objects.create(id=1, user=u, level=level, branch=branch)
+        self.obj = Student.objects.create(user=u, level=level, branch=branch)
 
-    gmt = GenericModelTests(Student, sampler=id_sampler(1))
+    def test_verbose_name(self):
+        self.assertVerboseName(Student, 'lycéen')
 
-    test_high_school_label = gmt.field_verbose_name('high_school', 'lycée')
+    def test_field_labels(self):
+        self.assertFieldVerboseName(self.obj, 'high_school', 'lycée')
+        self.assertFieldVerboseName(self.obj, 'level', 'niveau')
+        self.assertFieldVerboseName(self.obj, 'branch', 'filière')
+        self.assertFieldVerboseName(self.obj, 'tutoring_group',
+                                    'groupe de tutorat')
+        self.assertPropertyDescription(self.obj, 'grade', 'classe')
 
-    test_level_label = gmt.field_verbose_name('level', 'niveau')
+    def test_grade_property(self):
+        self.assertEqual(self.obj.grade, 'Première S')
 
-    test_branch_label = gmt.field_verbose_name('branch', 'filière')
+    def test_get_absolute_url(self):
+        return self.assertEqual(self.obj.get_absolute_url(),
+                                '/internal/lyceen/1/')
 
-    test_tutoring_group_label = gmt.field_verbose_name('tutoring_group',
-                                                       'groupe de tutorat')
-
-    test_grade_property_label = gmt.property_verbose_name('grade', 'classe')
-
-    test_grade_value = gmt.property_value('grade', 'Première S')
-
-    test_get_absolute_url = gmt.absolute_url('/internal/lyceen/1/')
-    test_verbose_name = gmt.verbose_name('lycéen')
-    test_str = gmt.str('Richard Feynman')
+    def test_str(self):
+        self.assertEqual('Richard Feynman', str(self.obj))
 
 
 class TutorModelTest(TestCase):

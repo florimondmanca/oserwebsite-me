@@ -176,27 +176,6 @@ class Country(models.Model):
         ordering = ('name', )
 
 
-class Event(models.Model):
-    """Abstract model for representing an event.
-
-    Fields
-    ------
-    title : models.CharField
-        Title of the event.
-    description : models.TextField
-        Short description of the event, optional.
-    """
-
-    title = models.CharField('titre', max_length=100)
-    description = models.TextField('description', blank=True)
-
-    def __str__(self):
-        return self.title
-
-    class Meta:  # noqa
-        abstract = True
-
-
 class SingleEventQuerySet(models.QuerySet):
     """Custom query set for SingleEvent model.
 
@@ -217,7 +196,7 @@ class SingleEventQuerySet(models.QuerySet):
         return self.filter(date__gte=today)
 
 
-class SingleEvent(Event):
+class SingleEvent(models.Model):
     """Repreents an event that occurs on a specific day.
 
     Fields
@@ -247,6 +226,7 @@ class SingleEvent(Event):
         """True if the event's datetime is strictly in the past."""
         end = datetime.datetime.combine(self.date, self.end)
         return end < datetime.datetime.today()
+    finished.fget.short_description = 'terminé'
 
     class Meta:  # noqa
         ordering = ('date', 'start',)
@@ -254,8 +234,23 @@ class SingleEvent(Event):
 
 
 class Visit(SingleEvent):
-    """Represents a visit event to which students can participate."""
+    """Represents a visit event to which students can participate.
 
+    Fields
+    ------
+    @include fields from SingleEvent
+    title : char[100]
+        A title for the visit.
+    description : text[blank]
+        A description for the visit.
+    place : FK[Place]
+        The visited place.
+    students : ManyToMany[Student]
+        Students that participate to the visit.
+    """
+
+    title = models.CharField('titre', max_length=100)
+    description = models.TextField('description', blank=True)
     place = models.ForeignKey('Place', models.SET_NULL, null=True,
                               verbose_name='lieu')
     students = models.ManyToManyField('Student')
@@ -263,6 +258,9 @@ class Visit(SingleEvent):
     class Meta:  # noqa
         ordering = SingleEvent._meta.ordering
         verbose_name = 'sortie'
+
+    def __str__(self):
+        return self.title
 
 
 class TutoringGroup(models.Model):
@@ -317,20 +315,25 @@ class TutoringGroup(models.Model):
         ordering = ('high_school', 'level')
 
 
-class TutoringMeeting(models.Model):
+class TutoringMeeting(SingleEvent):
     """Model representing a tutoring meeting.
 
     A tutoring meeting is a temporal instance of a tutoring group, i.e.
     an event when tutors and students meet to do several activities.
+
+    Fields
+    ------
+    @include fields from SingleEvent
+    tutoring_group : TutoringGroup as foreign key
     """
 
-    date = models.DateField('date')
     tutoring_group = models.ForeignKey('TutoringGroup',
                                        models.SET_NULL, null=True,
                                        verbose_name='groupe de tutorat')
 
     @property
     def high_school(self):
+        """Return the high school related to the meeting's group."""
         return self.tutoring_group.high_school
     high_school.fget.short_description = 'lycée'
 

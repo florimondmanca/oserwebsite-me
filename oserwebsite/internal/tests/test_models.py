@@ -3,13 +3,16 @@
 import random
 import datetime
 
-from django.test import TestCase
 from django.contrib.auth.models import User
-from django.utils.functional import SimpleLazyObject
 
 from internal.models import HighSchool, Student, Tutor, TutoringGroup, \
-    Level, Branch, TutoringMeeting, Country, Place, Event, SingleEvent
-from internal.tests.utils import GenericModelTests, id_sampler, MyTestCase
+    Level, Branch, TutoringMeeting, Country, Place, SingleEvent
+from internal.tests.utils import MyTestCase
+
+
+def rands(s, k=10):
+    """Return a random string composed of k letters of s."""
+    return ''.join(random.choices(s, k=k))
 
 
 class LevelModelTest(MyTestCase):
@@ -137,32 +140,39 @@ class TutorModelTest(MyTestCase):
         self.assertEqual('Richard Feynman', str(self.obj))
 
 
-class EventTest(MyTestCase):
-    """Tests for Event model."""
-
-    def setUp(self):
-        self.obj = Event(title='Test', description='Test event')
-
-    def test_field_labels(self):
-        self.assertFieldVerboseName(Event, 'title', 'titre')
-        self.assertFieldVerboseName(Event, 'description', 'description')
-
-    def test_title_max_length(self):
-        self.assertMaxLength(Event, 'title', 100)
-
-    def test_description_blank(self):
-        self.assertTrue(self.get_field(Event, 'description').blank)
-
-    def test_str(self):
-        self.assertEqual('Test', str(self.obj))
-
-    def test_is_abstract(self):
-        self.assertTrue(Event._meta.abstract)
-
-
 class SingleEventTest(MyTestCase):
     """Tests for SingleEvent model."""
-    pass
+
+    @classmethod
+    def setUpTestData(self):
+        today = datetime.date.today()
+        now = datetime.datetime.now()
+        one_hour_after = now + datetime.timedelta(hours=1)
+        self.obj = SingleEvent(
+            date=today,
+            start=now.time(),
+            end=one_hour_after.time(),
+        )
+
+    def test_is_abstract(self):
+        self.assertTrue(SingleEvent._meta.abstract)
+
+    def test_field_labels(self):
+        self.assertFieldVerboseName(SingleEvent, 'date', 'date')
+        self.assertFieldVerboseName(SingleEvent, 'start',
+                                    'heure de début')
+        self.assertFieldVerboseName(SingleEvent, 'end',
+                                    'heure de fin')
+        self.assertPropertyDescription(SingleEvent, 'finished',
+                                       'terminé')
+
+    def test_ordering_by_date_and_start(self):
+        self.assertEqual(SingleEvent._meta.ordering, ('date', 'start'))
+
+    def test_finished_property(self):
+        end = datetime.datetime.combine(self.obj.date, self.obj.end)
+        finished = datetime.datetime.today() > end
+        self.assertEqual(finished, self.obj.finished)
 
 
 class PlaceModelTest(MyTestCase):
@@ -194,9 +204,6 @@ class HighSchoolModelTest(MyTestCase):
         self.obj = HighSchool.objects.create(id=1, name='Lycée Michelin')
         level = Level.objects.create(id=1, name='Première')
         group = TutoringGroup.objects.create(high_school=self.obj, level=level)
-
-        def rands(s):
-            return ''.join(random.choices(s, k=10))
 
         for _ in range(3):
             u = User.objects.create(
@@ -232,52 +239,58 @@ class HighSchoolModelTest(MyTestCase):
         self.assertEqual(str(self.obj), 'Lycée Michelin')
 
 
-class TutoringGroupModelTest(TestCase):
+class TutoringGroupModelTest(MyTestCase):
     """Unit tests for TutoringGroup model."""
 
     @classmethod
     def setUpTestData(self):
-        bidule = HighSchool.objects.create(id=1, name='Lycée Bidule')
-        level = Level.objects.create(id=1, name='Première')
-        group = TutoringGroup.objects.create(id=1, high_school=bidule,
-                                             level=level)
+        self.high_school = HighSchool.objects.create(name='Lycée Michelin')
+        self.level = Level.objects.create(id=1, name='Première')
+        self.obj = TutoringGroup.objects.create(
+            high_school=self.high_school,
+            level=self.level)
 
-        def add(cls, number, **kwargs):
-            for i in range(number):
-                u = User.objects.create(username=random.choices('abc', k=100))
-                cls.objects.create(user=u, **kwargs)
-
-        add(Tutor, 3, tutoring_group=group)
-        add(Student, 6, tutoring_group=group)
-
-        today = datetime.date.today()
+        today = datetime.datetime.today()
+        one_hour_after = today + datetime.timedelta(hours=1)
+        start = today.time()
+        end = one_hour_after.time()
 
         for i in filter(None, range(-5, 5)):
-            date = today + datetime.timedelta(days=i - 5)
-            TutoringMeeting.objects.create(id=i + 6, tutoring_group=group,
-                                           date=date)
+            date = (today + datetime.timedelta(days=i - 5)).date()
+            TutoringMeeting.objects.create(
+                id=i + 6, tutoring_group=self.obj,
+                date=date, start=start, end=end)
 
-    gmt = GenericModelTests(TutoringGroup, sampler=id_sampler(1))
+    def test_field_labels(self):
+        self.assertFieldVerboseName(TutoringGroup, 'high_school', 'lycée')
+        self.assertFieldVerboseName(TutoringGroup, 'level', 'niveau')
+        self.assertPropertyDescription(TutoringGroup, 'name', 'nom')
+        self.assertPropertyDescription(TutoringGroup, 'next_meeting',
+                                       'prochaine séance')
+        self.assertPropertyDescription(TutoringGroup, 'upcoming_meetings',
+                                       'prochaines séances')
+        self.assertPropertyDescription(TutoringGroup, 'past_meetings',
+                                       'séances passées')
 
-    test_high_school_label = gmt.field_verbose_name('high_school', 'lycée')
+    def test_tutor_foreign_key(self):
+        self.obj.tutor_set
 
-    test_level_label = gmt.field_verbose_name('level', 'niveau')
+    def test_student_foreign_key(self):
+        self.obj.student_set
 
-    test_name_label = gmt.property_verbose_name('name', 'nom')
-    test_name_value = gmt.property_value('name', 'Lycée Bidule (Premières)')
+    def test_tutoring_meeting_foreign_key(self):
+        self.obj.tutoringmeeting_set
 
-    test_upcoming_meetings_label = gmt.property_verbose_name(
-        'upcoming_meetings', 'prochaines séances')
+    def test_name_shows_high_school_and_level(self):
+        self.assertEqual(self.obj.name, 'Lycée Michelin (Premières)')
 
     def test_upcoming_meetings(self):
-        group = TutoringGroup.objects.get(id=1)
-        upcoming = (group.tutoringmeeting_set
+        upcoming = (self.obj.tutoringmeeting_set
                     .order_by('date')
                     .filter(date__gte=datetime.date.today()))
-        self.assertListEqual(list(upcoming), list(group.upcoming_meetings))
-
-    test_past_meetings_label = gmt.property_verbose_name(
-        'past_meetings', 'séances passées')
+        self.assertQuerysetEqual(upcoming,
+                                 map(repr, self.obj.upcoming_meetings),
+                                 ordered=False)
 
     def test_past_meetings(self):
         group = TutoringGroup.objects.get(id=1)
@@ -285,13 +298,20 @@ class TutoringGroupModelTest(TestCase):
         past_meetings = (group.tutoringmeeting_set
                          .order_by('-date')
                          .filter(date__lt=today))
-        self.assertListEqual(list(past_meetings), list(group.past_meetings))
+        self.assertQuerysetEqual(past_meetings,
+                                 map(repr, self.obj.past_meetings),
+                                 ordered=False)
 
-    test_get_absolute_url = gmt.absolute_url('/internal/groupe/1/')
-    test_verbose_name = gmt.verbose_name('groupe de tutorat')
-    test_str = gmt.str('Lycée Bidule (Premières)')
+    def test_get_absolute_url(self):
+        self.assertEqual(self.obj.get_absolute_url(), '/internal/groupe/1/')
 
+    def test_verbose_name(self):
+        self.assertVerboseName(TutoringGroup, 'groupe de tutorat')
+        self.assertVerboseNamePlural(TutoringGroup, 'groupes de tutorat')
 
-# TODO TutoringMeetingModelTest
-# TODO AddressMixinTest
-# TODO ProfileModelTest
+    def test_ordering_by_high_school_and_level(self):
+        self.assertEqual(TutoringGroup._meta.ordering,
+                         ('high_school', 'level'))
+
+    def test_str(self):
+        self.assertEqual(str(self.obj), 'Lycée Michelin (Premières)')

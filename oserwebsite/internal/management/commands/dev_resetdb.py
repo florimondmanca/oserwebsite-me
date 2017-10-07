@@ -8,21 +8,13 @@ from django.core.management import call_command
 
 from django.contrib.auth.models import User
 from internal.models import Tutor, Student, TutoringGroup, TutoringMeeting, \
-    HighSchool, Level, Branch, Country, Rope
+    HighSchool, Level, Branch, Country, Rope, Visit, Place
 
 
 class Command(BaseCommand):
     """Erase the database and initialize it with dummy data."""
 
     def handle(self, *args, **options):
-        confirm_msg = """\
-This command will erase the database (including superusers) and
-replace its contents with pre-defined ones. Continue? (y/n) """
-        confirm = input(self.style.WARNING(confirm_msg))
-        if confirm != 'y':
-            self.stdout.write('Aborting...')
-            return
-
         call_command('flush')
         self.stdout.write(self.style.NOTICE('Please create a new super user:'))
         call_command('createsuperuser')
@@ -106,6 +98,11 @@ replace its contents with pre-defined ones. Continue? (y/n) """
 
         rope_names = (
             'Cordée Michelin', 'Cordée Lemoigne', 'Cordée Open',
+        )
+
+        place_names = (
+            'Palais de la Découverte', 'Musée du Louvre',
+            'Musée Pompidou', 'Oxford University',
         )
 
         # create countries
@@ -229,9 +226,41 @@ replace its contents with pre-defined ones. Continue? (y/n) """
         for i in range(n_meetings):
             meeting = TutoringMeeting.objects.create(
                 date=random_date(),
+                start='9:00',
+                end='12:00',
                 tutoring_group=random.choice(TutoringGroup.objects.all()),
             )
             meeting.save()
         self.stdout.write('Created {} tutoring meetings'.format(n_meetings))
+
+        # create places
+        for name in place_names:
+            Place.objects.create(
+                name=name,
+                **random_address(),
+            )
+        self.stdout.write('Created {} places'
+                          .format(len(place_names)))
+
+        # create visits
+        def random_timedelta():
+            return datetime.timedelta(hours=random.choice(range(18)))
+
+        n_visits = 10
+        for _ in range(n_visits):
+            place_name = random.choice(place_names)
+            place = Place.objects.filter(name=place_name).first()
+            start = random_timedelta()
+            end = start + datetime.timedelta(hours=4)
+            Visit.objects.create(
+                place=place,
+                title=place.name,
+                description='Visite à {}'.format(place.name),
+                date=random_date(),
+                start=str(start),
+                end=str(end),
+            )
+        self.stdout.write('Created {} visits'
+                          .format(n_visits))
 
         self.stdout.write(self.style.SUCCESS('Database reset!'))

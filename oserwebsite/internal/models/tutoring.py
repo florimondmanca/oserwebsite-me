@@ -124,7 +124,7 @@ class Rope(models.Model):
     See: http://www.cordeesdelareussite.fr
     """
 
-    name = models.CharField('nom', max_length=100, help_text='Nom de la cordée')
+    name = models.CharField('nom', max_length=100)
 
     def __str__(self):
         return self.name

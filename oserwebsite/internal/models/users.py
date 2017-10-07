@@ -39,18 +39,27 @@ class Student(base.Profile):
                     'high_school', 'level')
 
 
-class Level(base.NameModel):
+class Level(models.Model):
     """Model representing a class level."""
+
+    name = models.CharField('nom', max_length=30)
+
+    def __str__(self):
+        return self.name
 
     class Meta:  # noqa
         verbose_name = 'niveau'
         verbose_name_plural = 'niveaux'
 
 
-class Branch(base.NameModel):
+class Branch(models.Model):
     """Model representing a class branch."""
 
+    name = models.CharField('nom', max_length=100)
     short_name = models.CharField('acronyme', max_length=5)
+
+    def __str__(self):
+        return self.name
 
     class Meta:  # noqa
         verbose_name = 'filière'

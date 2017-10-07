@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.utils.functional import SimpleLazyObject
 
 from internal.models import HighSchool, Student, Tutor, TutoringGroup, \
-    Level, Branch, TutoringMeeting, Country
+    Level, Branch, TutoringMeeting, Country, Place
 from internal.tests.utils import GenericModelTests, id_sampler
 
 
@@ -19,14 +19,14 @@ class LevelModelTest(TestCase):
     def setUpTestData(self):
         Level.objects.create(name='Première')
 
-    GMT = GenericModelTests(Level, sampler=id_sampler(1))
+    gmt = GenericModelTests(Level, sampler=id_sampler(1))
 
-    test_name_label = GMT.field_verbose_name('name', 'nom')
-    test_name_max_length = GMT.field_max_length('name', 30)
+    test_name_label = gmt.field_verbose_name('name', 'nom')
+    test_name_max_length = gmt.field_max_length('name', 30)
 
-    test_verbose_name = GMT.verbose_name('niveau')
+    test_verbose_name = gmt.verbose_name('niveau')
 
-    test_str = GMT.str('Première')
+    test_str = gmt.str('Première')
 
 
 class BranchModelTest(TestCase):
@@ -36,14 +36,14 @@ class BranchModelTest(TestCase):
     def setUpTestData(self):
         Branch.objects.create(name='Scientifique', short_name='S')
 
-    GMT = GenericModelTests(Branch, sampler=id_sampler(1))
+    gmt = GenericModelTests(Branch, sampler=id_sampler(1))
 
-    test_name_label = GMT.field_verbose_name('name', 'nom')
-    test_name_max_length = GMT.field_max_length('name', 100)
+    test_name_label = gmt.field_verbose_name('name', 'nom')
+    test_name_max_length = gmt.field_max_length('name', 100)
 
-    test_verbose_name = GMT.verbose_name('filière')
+    test_verbose_name = gmt.verbose_name('filière')
 
-    test_str = GMT.str('Scientifique')
+    test_str = gmt.str('Scientifique')
 
 
 class CountryModelTest(TestCase):
@@ -53,14 +53,14 @@ class CountryModelTest(TestCase):
     def setUpTestData(self):
         Country.objects.create(name='France')
 
-    GMT = GenericModelTests(Country, sampler=id_sampler(1))
+    gmt = GenericModelTests(Country, sampler=id_sampler(1))
 
-    test_name_label = GMT.field_verbose_name('name', 'nom')
-    test_name_max_length = GMT.field_max_length('name', 50)
+    test_name_label = gmt.field_verbose_name('name', 'nom')
+    test_name_max_length = gmt.field_max_length('name', 50)
 
-    test_verbose_name = GMT.verbose_name('pays')
+    test_verbose_name = gmt.verbose_name('pays')
 
-    test_str = GMT.str('France')
+    test_str = gmt.str('France')
 
 
 class StudentModelTest(TestCase):
@@ -73,24 +73,24 @@ class StudentModelTest(TestCase):
         u = User.objects.create(first_name='Richard', last_name='Feynman')
         Student.objects.create(id=1, user=u, level=level, branch=branch)
 
-    GMT = GenericModelTests(Student, sampler=id_sampler(1))
+    gmt = GenericModelTests(Student, sampler=id_sampler(1))
 
-    test_high_school_label = GMT.field_verbose_name('high_school', 'lycée')
+    test_high_school_label = gmt.field_verbose_name('high_school', 'lycée')
 
-    test_level_label = GMT.field_verbose_name('level', 'niveau')
+    test_level_label = gmt.field_verbose_name('level', 'niveau')
 
-    test_branch_label = GMT.field_verbose_name('branch', 'filière')
+    test_branch_label = gmt.field_verbose_name('branch', 'filière')
 
-    test_tutoring_group_label = GMT.field_verbose_name('tutoring_group',
+    test_tutoring_group_label = gmt.field_verbose_name('tutoring_group',
                                                        'groupe de tutorat')
 
-    test_grade_property_label = GMT.property_verbose_name('grade', 'classe')
+    test_grade_property_label = gmt.property_verbose_name('grade', 'classe')
 
-    test_grade_value = GMT.property_value('grade', 'Première S')
+    test_grade_value = gmt.property_value('grade', 'Première S')
 
-    test_get_absolute_url = GMT.absolute_url('/internal/lyceen/1/')
-    test_verbose_name = GMT.verbose_name('lycéen')
-    test_str = GMT.str('Richard Feynman')
+    test_get_absolute_url = gmt.absolute_url('/internal/lyceen/1/')
+    test_verbose_name = gmt.verbose_name('lycéen')
+    test_str = gmt.str('Richard Feynman')
 
 
 class TutorModelTest(TestCase):
@@ -105,20 +105,36 @@ class TutorModelTest(TestCase):
         u = User.objects.create(first_name='Richard', last_name='Feynman')
         Tutor.objects.create(id=1, user=u, tutoring_group=group)
 
-    GMT = GenericModelTests(Tutor, sampler=id_sampler(1))
+    gmt = GenericModelTests(Tutor, sampler=id_sampler(1))
 
-    test_tutoring_group_label = GMT.field_verbose_name('tutoring_group',
+    test_tutoring_group_label = gmt.field_verbose_name('tutoring_group',
                                                        'groupe de tutorat')
 
-    test_high_school_property_label = GMT.property_verbose_name('high_school',
+    test_high_school_property_label = gmt.property_verbose_name('high_school',
                                                                 'lycée')
 
-    test_high_school_value = GMT.property_value(
+    test_high_school_value = gmt.property_value(
         'high_school', SimpleLazyObject(lambda: TutorModelTest.bidule))
 
-    test_get_absolute_url = GMT.absolute_url('/internal/tuteur/1/')
-    test_verbose_name = GMT.verbose_name('tuteur')
-    test_str = GMT.str('Richard Feynman')
+    test_get_absolute_url = gmt.absolute_url('/internal/tuteur/1/')
+    test_verbose_name = gmt.verbose_name('tuteur')
+    test_str = gmt.str('Richard Feynman')
+
+
+class PlaceModelTest(TestCase):
+    """Unit tests for Place model."""
+
+    @classmethod
+    def setUpTestData(self):
+        Place.objects.create(id=1, name='Tour Eiffel')
+
+    gmt = GenericModelTests(Place, sampler=id_sampler(1))
+
+    test_name_label = gmt.field_verbose_name('name', 'nom')
+    test_name_max_length = gmt.field_max_length('name', 200)
+
+    test_verbose_name = gmt.verbose_name('lieu')
+    test_str = gmt.str('Tour Eiffel')
 
 
 class HighSchoolModelTest(TestCase):
@@ -138,14 +154,14 @@ class HighSchoolModelTest(TestCase):
         add(Tutor, 3, tutoring_group=group)
         add(Student, 6, high_school=bidule)
 
-    GMT = GenericModelTests(HighSchool, sampler=id_sampler(1))
+    gmt = GenericModelTests(HighSchool, sampler=id_sampler(1))
 
-    test_name_label = GMT.field_verbose_name('name', 'nom')
-    test_name_max_length = GMT.field_max_length('name', 100)
+    test_name_label = gmt.field_verbose_name('name', 'nom')
+    test_name_max_length = gmt.field_max_length('name', 200)
 
-    test_get_absolute_url = GMT.absolute_url('/internal/lycee/1/')
-    test_verbose_name = GMT.verbose_name('lycée')
-    test_str = GMT.str('Lycée Bidule')
+    test_get_absolute_url = gmt.absolute_url('/internal/lycee/1/')
+    test_verbose_name = gmt.verbose_name('lycée')
+    test_str = gmt.str('Lycée Bidule')
 
 
 class TutoringGroupModelTest(TestCase):
@@ -173,16 +189,16 @@ class TutoringGroupModelTest(TestCase):
             TutoringMeeting.objects.create(id=i + 6, tutoring_group=group,
                                            date=date)
 
-    GMT = GenericModelTests(TutoringGroup, sampler=id_sampler(1))
+    gmt = GenericModelTests(TutoringGroup, sampler=id_sampler(1))
 
-    test_high_school_label = GMT.field_verbose_name('high_school', 'lycée')
+    test_high_school_label = gmt.field_verbose_name('high_school', 'lycée')
 
-    test_level_label = GMT.field_verbose_name('level', 'niveau')
+    test_level_label = gmt.field_verbose_name('level', 'niveau')
 
-    test_name_label = GMT.property_verbose_name('name', 'nom')
-    test_name_value = GMT.property_value('name', 'Lycée Bidule (Premières)')
+    test_name_label = gmt.property_verbose_name('name', 'nom')
+    test_name_value = gmt.property_value('name', 'Lycée Bidule (Premières)')
 
-    test_upcoming_meetings_label = GMT.property_verbose_name(
+    test_upcoming_meetings_label = gmt.property_verbose_name(
         'upcoming_meetings', 'prochaines séances')
 
     def test_upcoming_meetings(self):
@@ -192,7 +208,7 @@ class TutoringGroupModelTest(TestCase):
                     .filter(date__gte=datetime.date.today()))
         self.assertListEqual(list(upcoming), list(group.upcoming_meetings))
 
-    test_past_meetings_label = GMT.property_verbose_name(
+    test_past_meetings_label = gmt.property_verbose_name(
         'past_meetings', 'séances passées')
 
     def test_past_meetings(self):
@@ -203,9 +219,9 @@ class TutoringGroupModelTest(TestCase):
                          .filter(date__lt=today))
         self.assertListEqual(list(past_meetings), list(group.past_meetings))
 
-    test_get_absolute_url = GMT.absolute_url('/internal/groupe/1/')
-    test_verbose_name = GMT.verbose_name('groupe de tutorat')
-    test_str = GMT.str('Lycée Bidule (Premières)')
+    test_get_absolute_url = gmt.absolute_url('/internal/groupe/1/')
+    test_verbose_name = gmt.verbose_name('groupe de tutorat')
+    test_str = gmt.str('Lycée Bidule (Premières)')
 
 
 # TODO TutoringMeetingModelTest

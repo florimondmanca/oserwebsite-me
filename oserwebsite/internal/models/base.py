@@ -6,14 +6,29 @@ from django.utils.safestring import mark_safe
 
 
 class AddressMixin(models.Model):
-    """Mixin that adds address-related fieldsto a Model.
+    """Mixin that adds address-related fields to a Model.
+
+    Fields
+    ------
+    line1 : char[100]
+        First line of the address.
+    line2 : char[100][blank]
+        Second line of the address, not mendatory.
+    post_code : char[20]
+    city : char[50]
+    country : FK[Country]
 
     Properties
     ----------
     address : str
-        A multiline string displaying the full address.
+        A multiline string displaying the full address:
+            <line1>
+            <line2>
+            <postcode> <city>
+            <country>
     address_inline : str
-        A string displaying the full address, made to be used inline.
+        A string displaying the full address, made to be used inline:
+            <line1>, <line2>, <postcode> <city>, <country>
     """
 
     line1 = models.CharField(
@@ -29,20 +44,35 @@ class AddressMixin(models.Model):
                                 models.SET_NULL, null=True,
                                 verbose_name='pays')
 
-    def _address_separated(self, sep=', '):
+    def _formatted_address(self, sep=', '):
+        """Return a single-string formatted version of the address.
+
+        The fields line1, line2, post_code, city and country are displayed
+        in a sequence, separated by the specified sep string.
+
+        Parameters
+        ----------
+        sep : str, optional
+            Separator used to display the address.
+
+        Example
+        -------
+        >>> a._formatted_address(sep=', ')
+        3 rue Jean Maillard, Appt 140, 45600 Valence, France
+        """
         city_line = '{} {}'.format(self.post_code, self.city.upper())
         _lines = (self.line1, self.line2, city_line,
                   self.country.name.upper())
-        lines = list(filter(None, _lines))
+        lines = [line for line in _lines if line]
         return mark_safe(sep.join(lines))
 
     @property
     def address_inline(self):
-        return self._address_separated(sep=', ')
+        return self._formatted_address(sep=', ')
 
     @property
     def address(self):
-        return self._address_separated(sep='<br/>')
+        return self._formatted_address(sep='<br/>')
 
     class Meta:  # noqa
         abstract = True
@@ -65,19 +95,27 @@ class Place(AddressMixin):
 class Profile(AddressMixin):
     """Abstract model representing a user profile.
 
-    Attributes
+    A user profile has a related django User, an address, a birthday and
+    a phone.
+
+    Fields
     ----------
     user : django.contrib.auth.models.User
-    birthday : date
-    phone : str
+    birthday : date[blank]
+    phone : char[50][blank]
 
     Properties
     ----------
     first_name : str
+        The django User's first name field.
     last_name : str
+        The django User's last name field.
     full_name : str
+        First name and last name, e.g. 'John Smith'.
     email : str
+        The django User's email field.
     username : str
+        The django User's username field.
     """
 
     user = models.OneToOneField(User, verbose_name='utilisateur')
@@ -115,23 +153,13 @@ class Profile(AddressMixin):
         abstract = True
 
 
-class NameModel(models.Model):
-    """Model that only has a name field.
+class Country(models.Model):
+    """Represents a country."""
 
-    The model's string representation is its name.
-    """
-
-    name = models.CharField('nom', max_length=30)
+    name = models.CharField('nom', max_length=50)
 
     def __str__(self):
         return self.name
-
-    class Meta:  # noqa
-        abstract = True
-
-
-class Country(NameModel):
-    """Represents a country."""
 
     class Meta:  # noqa
         verbose_name = 'pays'

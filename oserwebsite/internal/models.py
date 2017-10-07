@@ -197,8 +197,8 @@ class Event(models.Model):
         abstract = True
 
 
-class SingleEventManager(models.Manager):
-    """Custom manager for SingleEvent model.
+class SingleEventQuerySet(models.QuerySet):
+    """Custom query set for SingleEvent model.
 
     Methods
     -------
@@ -240,7 +240,7 @@ class SingleEvent(Event):
     start = models.TimeField('heure de début')
     end = models.TimeField('heure de fin')
 
-    objects = SingleEventManager()
+    objects = SingleEventQuerySet.as_manager()
 
     @property
     def finished(self):
@@ -353,6 +353,7 @@ class HighSchool(Place):
     def tutor_set(self):
         """Return a queryset with the tutors that operate in the school."""
         return Tutor.objects.filter(tutoring_group__high_school=self)
+    tutor_set.fget.short_description = 'tuteurs'
 
     def get_absolute_url(self):
         return reverse('highschool-detail', args=[str(self.id)])

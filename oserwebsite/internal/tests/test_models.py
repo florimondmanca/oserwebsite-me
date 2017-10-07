@@ -6,73 +6,10 @@ import datetime
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.utils.functional import SimpleLazyObject
-from django.core.exceptions import FieldDoesNotExist
 
 from internal.models import HighSchool, Student, Tutor, TutoringGroup, \
-    Level, Branch, TutoringMeeting, Country, Place
-from internal.tests.utils import GenericModelTests, id_sampler
-
-
-class MyTestCase(TestCase):
-    """Extends Django's test case with extra assert methods."""
-
-    def _get_field(self, obj, field_name):
-        """Get a model's field object by name."""
-        return obj._meta.get_field(field_name)
-
-    def assertVerboseName(self, model, expected):
-        """Compare a model's verbose_name meta attribute to an expected value.
-
-        Parameters
-        ---------
-        model : models.Model
-        expected : str
-        """
-        name = model._meta.verbose_name
-        self.assertEqual(name, expected)
-
-    def assertFieldVerboseName(self, obj, field_name, expected):
-        """Compare an object's field verbose_name to an expected value.
-
-        Parameters
-        ---------
-        obj : models.Model instance
-            An instance of a model.
-        field_name : str
-        expected : str
-        """
-        name = self._get_field(obj, field_name).verbose_name
-        self.assertEqual(name, expected)
-
-    def assertPropertyDescription(self, obj, prop_name, expected):
-        """Compare an object's property short_description to an expected value.
-
-        Parameters
-        ---------
-        obj : models.Model instance
-            An instance of a model.
-        prop_name : str
-        expected : str
-        """
-        prop = type(obj).__dict__[prop_name]
-        name = prop.fget.short_description
-        self.assertEqual(name, expected)
-
-    def assertMaxLength(self, obj, field_name, expected):
-        """Compare an object's field max_length to an expected value.
-
-        Typically used on CharFields.
-
-        Parameters
-        ---------
-        obj : models.Model instance
-            An instance of a model.
-        field_name : str
-            The corresponding field must have a max_length attribute.
-        expected : int
-        """
-        length = self._get_field(obj, field_name).max_length
-        self.assertEqual(length, expected)
+    Level, Branch, TutoringMeeting, Country, Place, Event, SingleEvent
+from internal.tests.utils import GenericModelTests, id_sampler, MyTestCase
 
 
 class LevelModelTest(MyTestCase):
@@ -82,11 +19,11 @@ class LevelModelTest(MyTestCase):
     def setUpTestData(self):
         self.obj = Level.objects.create(name='Première')
 
-    def test_name_label(self):
-        self.assertFieldVerboseName(self.obj, 'name', 'nom')
+    def test_field_labels(self):
+        self.assertFieldVerboseName(Level, 'name', 'nom')
 
     def test_name_max_length(self):
-        self.assertMaxLength(self.obj, 'name', 30)
+        self.assertMaxLength(Level, 'name', 30)
 
     def test_verbose_name(self):
         self.assertVerboseName(Level, 'niveau')
@@ -102,11 +39,11 @@ class BranchModelTest(MyTestCase):
     def setUpTestData(self):
         self.obj = Branch.objects.create(name='Scientifique', short_name='S')
 
-    def test_name_label(self):
-        self.assertFieldVerboseName(self.obj, 'name', 'nom')
+    def test_field_labels(self):
+        self.assertFieldVerboseName(Branch, 'name', 'nom')
 
     def test_name_max_length(self):
-        self.assertMaxLength(self.obj, 'name', 100)
+        self.assertMaxLength(Branch, 'name', 100)
 
     def test_verbose_name(self):
         self.assertVerboseName(Branch, 'filière')
@@ -122,11 +59,11 @@ class CountryModelTest(MyTestCase):
     def setUpTestData(self):
         self.obj = Country.objects.create(name='France')
 
-    def test_name_label(self):
-        self.assertFieldVerboseName(self.obj, 'name', 'nom')
+    def test_field_labels(self):
+        self.assertFieldVerboseName(Country, 'name', 'nom')
 
     def test_name_max_length(self):
-        self.assertMaxLength(self.obj, 'name', 100)
+        self.assertMaxLength(Country, 'name', 100)
 
     def test_verbose_name(self):
         self.assertVerboseName(Country, 'pays')
@@ -149,15 +86,18 @@ class StudentModelTest(MyTestCase):
         self.assertVerboseName(Student, 'lycéen')
 
     def test_field_labels(self):
-        self.assertFieldVerboseName(self.obj, 'high_school', 'lycée')
-        self.assertFieldVerboseName(self.obj, 'level', 'niveau')
-        self.assertFieldVerboseName(self.obj, 'branch', 'filière')
-        self.assertFieldVerboseName(self.obj, 'tutoring_group',
+        self.assertFieldVerboseName(Student, 'high_school', 'lycée')
+        self.assertFieldVerboseName(Student, 'level', 'niveau')
+        self.assertFieldVerboseName(Student, 'branch', 'filière')
+        self.assertFieldVerboseName(Student, 'tutoring_group',
                                     'groupe de tutorat')
-        self.assertPropertyDescription(self.obj, 'grade', 'classe')
+        self.assertPropertyDescription(Student, 'grade', 'classe')
 
     def test_grade_property(self):
         self.assertEqual(self.obj.grade, 'Première S')
+
+    def test_tutoring_group_blank(self):
+        self.assertTrue(self.get_field(Student, 'tutoring_group').blank)
 
     def test_get_absolute_url(self):
         return self.assertEqual(self.obj.get_absolute_url(),
@@ -167,75 +107,129 @@ class StudentModelTest(MyTestCase):
         self.assertEqual('Richard Feynman', str(self.obj))
 
 
-class TutorModelTest(TestCase):
+class TutorModelTest(MyTestCase):
     """Unit tests for Tutor model."""
 
     @classmethod
     def setUpTestData(self):
-        self.bidule = HighSchool.objects.create(name='Lycée Bidule')
+        self.high_school = HighSchool.objects.create(name='Lycée Bidule')
         level = Level.objects.create(name='Première')
-        group = TutoringGroup.objects.create(high_school=self.bidule,
+        group = TutoringGroup.objects.create(high_school=self.high_school,
                                              level=level)
         u = User.objects.create(first_name='Richard', last_name='Feynman')
-        Tutor.objects.create(id=1, user=u, tutoring_group=group)
+        self.obj = Tutor.objects.create(user=u, tutoring_group=group)
 
-    gmt = GenericModelTests(Tutor, sampler=id_sampler(1))
+    def test_field_labels(self):
+        self.assertFieldVerboseName(Tutor, 'tutoring_group',
+                                    'groupe de tutorat')
+        self.assertPropertyDescription(Tutor, 'high_school', 'lycée')
 
-    test_tutoring_group_label = gmt.field_verbose_name('tutoring_group',
-                                                       'groupe de tutorat')
+    def test_high_school_property(self):
+        self.assertEqual(self.obj.high_school, self.high_school)
 
-    test_high_school_property_label = gmt.property_verbose_name('high_school',
-                                                                'lycée')
+    def test_get_absolute_url(self):
+        self.assertEqual(self.obj.get_absolute_url(), '/internal/tuteur/1/')
 
-    test_high_school_value = gmt.property_value(
-        'high_school', SimpleLazyObject(lambda: TutorModelTest.bidule))
+    def test_verbose_name(self):
+        self.assertVerboseName(Tutor, 'tuteur')
 
-    test_get_absolute_url = gmt.absolute_url('/internal/tuteur/1/')
-    test_verbose_name = gmt.verbose_name('tuteur')
-    test_str = gmt.str('Richard Feynman')
+    def test_str(self):
+        self.assertEqual('Richard Feynman', str(self.obj))
 
 
-class PlaceModelTest(TestCase):
+class EventTest(MyTestCase):
+    """Tests for Event model."""
+
+    def setUp(self):
+        self.obj = Event(title='Test', description='Test event')
+
+    def test_field_labels(self):
+        self.assertFieldVerboseName(Event, 'title', 'titre')
+        self.assertFieldVerboseName(Event, 'description', 'description')
+
+    def test_title_max_length(self):
+        self.assertMaxLength(Event, 'title', 100)
+
+    def test_description_blank(self):
+        self.assertTrue(self.get_field(Event, 'description').blank)
+
+    def test_str(self):
+        self.assertEqual('Test', str(self.obj))
+
+    def test_is_abstract(self):
+        self.assertTrue(Event._meta.abstract)
+
+
+class SingleEventTest(MyTestCase):
+    """Tests for SingleEvent model."""
+    pass
+
+
+class PlaceModelTest(MyTestCase):
     """Unit tests for Place model."""
 
     @classmethod
     def setUpTestData(self):
-        Place.objects.create(id=1, name='Tour Eiffel')
+        self.obj = Place.objects.create(name='Tour Eiffel')
 
-    gmt = GenericModelTests(Place, sampler=id_sampler(1))
+    def test_field_labels(self):
+        self.assertFieldVerboseName(Place, 'name', 'nom')
 
-    test_name_label = gmt.field_verbose_name('name', 'nom')
-    test_name_max_length = gmt.field_max_length('name', 200)
+    def test_name_max_length(self):
+        self.assertMaxLength(Place, 'name', 200)
 
-    test_verbose_name = gmt.verbose_name('lieu')
-    test_str = gmt.str('Tour Eiffel')
+    def test_verbose_name(self):
+        self.assertVerboseName(Place, 'lieu')
+        self.assertVerboseNamePlural(Place, 'lieux')
+
+    def test_str(self):
+        self.assertEqual('Tour Eiffel', str(self.obj))
 
 
-class HighSchoolModelTest(TestCase):
+class HighSchoolModelTest(MyTestCase):
     """Unit tests for HighSchool model."""
 
     @classmethod
     def setUpTestData(self):
-        bidule = HighSchool.objects.create(id=1, name='Lycée Bidule')
+        self.obj = HighSchool.objects.create(id=1, name='Lycée Michelin')
         level = Level.objects.create(id=1, name='Première')
-        group = TutoringGroup.objects.create(high_school=bidule, level=level)
+        group = TutoringGroup.objects.create(high_school=self.obj, level=level)
 
-        def add(cls, number, **kwargs):
-            for i in range(number):
-                u = User.objects.create(username=random.choices('abc', k=10))
-                cls.objects.create(user=u, **kwargs)
+        def rands(s):
+            return ''.join(random.choices(s, k=10))
 
-        add(Tutor, 3, tutoring_group=group)
-        add(Student, 6, high_school=bidule)
+        for _ in range(3):
+            u = User.objects.create(
+                username=rands('abc'),
+                first_name=rands('def'),
+                last_name=rands('ghi'),
+            )
+            Tutor.objects.create(user=u, tutoring_group=group)
 
-    gmt = GenericModelTests(HighSchool, sampler=id_sampler(1))
+    def test_field_labels(self):
+        self.assertFieldVerboseName(HighSchool, 'name', 'nom')
+        self.assertFieldVerboseName(HighSchool, 'rope', 'cordée')
+        self.assertPropertyDescription(HighSchool, 'tutor_set', 'tuteurs')
 
-    test_name_label = gmt.field_verbose_name('name', 'nom')
-    test_name_max_length = gmt.field_max_length('name', 200)
+    def test_tutor_set(self):
+        expected = Tutor.objects.filter(tutoring_group__high_school=self.obj)
+        self.assertQuerysetEqual(self.obj.tutor_set, map(repr, expected),
+                                 ordered=False)
 
-    test_get_absolute_url = gmt.absolute_url('/internal/lycee/1/')
-    test_verbose_name = gmt.verbose_name('lycée')
-    test_str = gmt.str('Lycée Bidule')
+    def test_name_max_length(self):
+        self.assertMaxLength(HighSchool, 'name', 200)
+
+    def test_get_absolute_url(self):
+        self.assertEqual(self.obj.get_absolute_url(), '/internal/lycee/1/')
+
+    def test_verbose_name(self):
+        self.assertVerboseName(HighSchool, 'lycée')
+
+    def test_ordering_by_name(self):
+        self.assertEqual(HighSchool._meta.ordering, ('name',))
+
+    def test_str(self):
+        self.assertEqual(str(self.obj), 'Lycée Michelin')
 
 
 class TutoringGroupModelTest(TestCase):

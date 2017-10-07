@@ -1,5 +1,6 @@
 """Internal website views."""
 
+
 from django.shortcuts import redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
@@ -7,7 +8,30 @@ from django.contrib import messages
 from django.views import generic, View
 
 from .models import Student, Tutor, HighSchool, TutoringGroup, Visit
-from .forms import RegisterForm, StudentProfileForm, TutorProfileForm
+from .forms import RegisterForm, StudentProfileForm, TutorProfileForm, \
+    ContactForm
+from .utils import send_email_safe
+
+
+class ContactView(LoginRequiredMixin, View):
+    """Contact view."""
+
+    template_name = 'internal/contact.html'
+
+    def get(self, request):
+        form = ContactForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            email_from = request.user.email
+            to = ['florimond.manca@student.ecp.fr']
+            if send_email_safe(request, subject, message, email_from, to):
+                return redirect('index')
+        return render(request, self.template_name, {'form': form})
 
 
 class IndexView(LoginRequiredMixin, generic.TemplateView):

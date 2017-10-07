@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^index/$', views.IndexView.as_view(), name='index'),
     url(r'^faq/$', views.FaqView.as_view(), name='faq'),
     url(r'^donnees/$', views.DatabaseView.as_view(), name='database'),
+    url(r'^contact/$', views.ContactView.as_view(), name='contact'),
 ]
 
 # Register views

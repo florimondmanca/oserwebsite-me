@@ -24,7 +24,7 @@ def form_field(field, addon="", icon=""):
 
 @register.inclusion_tag('forms/column_form.html')
 def column_form(form, title="", description="", id="form",
-                submit_label="Submit"):
+                submit_label="Submit", method="post", action_url=""):
     """Render a form as a column.
 
     Parameters
@@ -41,5 +41,11 @@ def column_form(form, title="", description="", id="form",
     submit_label : str, optional
         The text displayed on the submit button.
     """
-    return {'form': form, 'title': title, 'description': description,
-            'id': id, 'submit_label': submit_label}
+    return {
+        'form': form,
+        'title': title,
+        'description': description,
+        'id': id,
+        'submit_label': submit_label,
+        'method': method,
+    }

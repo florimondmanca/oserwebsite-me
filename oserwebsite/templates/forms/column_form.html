@@ -11,7 +11,7 @@
 
       {% include "form_errors.html" with form=form %}
 
-      <form method="post" action="{% url 'register' %}">
+      <form method="{{ method }}" {% if action_url %}action="{% url action_url %}"{% endif %}>
         {% csrf_token %}
 
         {% for field in form  %}

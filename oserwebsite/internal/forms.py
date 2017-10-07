@@ -7,6 +7,13 @@ from django.utils.html import mark_safe
 from .models import Student, TutoringGroup, Tutor
 
 
+class ContactForm(forms.Form):
+    """Contact form with subject and message."""
+
+    subject = forms.CharField(label='Sujet', max_length=100)
+    message = forms.CharField(label='Message', widget=forms.Textarea)
+
+
 class RegisterForm(forms.Form):
     """Form for user registration."""
 

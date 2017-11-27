@@ -29,11 +29,11 @@ This web app is a management system for tutoring activities. High school student
 
 ### Previews
 
-#### Login
+#### Login and registration
 
-The login page allows to login or register a new account:
+These pages allow you to login or register a new account:
 
-![Login page](media/login-form.png)
+![Login page](media/login-form.png) ![Register page](media/register.png)
 
 #### Home page dashboard
 

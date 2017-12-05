@@ -91,7 +91,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'florimond.manca2@gmail.com'
-EMAIL_HOST_PASSWORD = '211242Coaster96'
+EMAIL_HOST_PASSWORD = 'hidden'
 EMAIL_RECIPIENT = ['florimond.manca@student.ecp.fr']  # custom
 
 
